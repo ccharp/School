@@ -1,0 +1,8 @@
+---The Original Table---
+2 3 5 6 
+5 7 8 9 
+1 4 6 3 
+5 6 3 4 
+---Block Averages---
+4 6 6 
+5 6 6 

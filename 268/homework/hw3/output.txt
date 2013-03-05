@@ -1,0 +1,15 @@
+Array size: 1000
+Bubble sort:  0s 0s 0.01s 0s 0.01s 0.004s
+Merge sort:  0s 0s 0s 0s 0s 0s 0s
+Quick sort:  0s 0s 0s 0s 0s 0s 0s
+
+Array size: 10000
+Bubble sort:  0.45s 0.44s 0.45s 0.44s 0.44s 0.444s
+Merge sort:  0s 0.01s 0s 0s 0s 0s 0.002s
+Quick sort:  0.01s 0s 0s 0s 0s 0s 0.002s
+
+Array size: 100000
+Bubble sort:  44.52s 44.35s 46.71s 47.06s 47.18s 45.964s
+Merge sort:  0.03s 0.03s 0.03s 0.02s 0.03s 0.03s 0.034s
+Quick sort:  0.01s 0.02s 0.01s 0.02s 0.01s 0.02s 0.018s
+

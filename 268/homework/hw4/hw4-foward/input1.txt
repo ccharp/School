@@ -1,0 +1,24 @@
+Insert cool
+Insert cat
+Insert lots
+Insert loads
+In-order-traversal
+Insert flounders
+Insert asshat
+Insert 1fucklol
+Insert goose
+Insert zero
+In-order-traversal
+Delete cat
+Delete flounders
+In-order-traversal
+Delete loads
+Delete 7
+In-order-traversal
+Delete 1fucklol
+Delete cool
+In-order-traversal
+Delete goose
+In-order-traversal
+Delete zero
+In-order-traversal

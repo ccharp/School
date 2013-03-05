@@ -1,0 +1,237 @@
+161,184c161,164
+<         | IARG ID       { 
+< 						  printf("    push       ");
+<                           function_labeltemp(function,$2); 
+< 						  printf("\n");
+< 						  
+< /*						  printf( "    movl        "); 
+< 						  printf("%i(", offset);
+<                           function_labeltemp(function,$2); 
+< 						  printf(")");
+< 						  printf( "\n "); */
+< 						
+<                           //printf( "call printf");//$3 is num_rgs  
+< 						}
+< 		| ICALL ID INT  {
+< 						  printf("    call        ");
+< 						  function_labeltemp(function, $2); 
+< 						  printf("\n");
+< 
+< 						  int i = 0;
+< 						  int num_args = $3;
+< 						  for(i = 0; i < num_args; i++) {
+< 						 	  printf("    pop        %%ebp\n");
+< 						  }
+< 					    }
+---
+>         | IARG ID       { }
+>         | ICALL ID INT  { /* printf( "calling " );
+>                           function_labeltemp(function,$2);
+>                           printf( " with %lld arguments\n", $3); */ }
+187,188c167
+<                           printf( ", %%eax\n" );
+< 						}
+---
+>                           printf( ", %%eax\n" ); }
+208,352c187,198
+< binop   : ID IEQ ID     { 
+< 						  printf( "    movl       " );  
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "    cmpl       " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " );
+<                           printf( "%%eax\n" ); 
+< 						
+<                           printf( "    sete       %%al" ); }
+< 
+<         | ID INE ID     { 
+< 						  printf( "    movl       " );  
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "    cmpl       " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " );
+<                           printf( "%%eax\n" ); 
+< 						
+<                           printf( "    setne      %%al" ); 
+< 						}
+< 
+<         | ID IGE ID     { 
+< 						  printf( "    movl       " );  
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "    cmpl       " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " );
+<                           printf( "%%eax\n" ); 
+< 						
+<                           printf( "    setge     %%al\n" ); 
+< 						  printf( "    movzbl    %%al,     %%eax\n" );
+< 						}
+<         | ID ILE ID     { 
+< 						  printf( "    movl       " );  
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "    cmpl       " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " );
+<                           printf( "%%eax\n" ); 
+< 						
+<                           printf( "    setle     %%al\n" ); 
+< 						  printf( "    movzbl    %%al,     %%eax\n" );
+< 						}
+<         | ID IGT ID     { 
+< 						  printf( "    movl       " );  
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "    cmpl       " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " );
+<                           printf( "%%eax\n" ); 
+< 						
+<                           printf( "    setg      %%al\n" ); 
+< 						  printf( "    movzbl    %%al,     %%eax\n" );
+< 						}
+<         | ID ILT ID     { 
+< 						  printf( "    movl       " );  
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "    cmpl       " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " );
+<                           printf( "%%eax\n" ); 
+< 						
+<                           printf( "    setl      %%al\n" ); 
+< 						  printf( "    movzbl    %%al,     %%eax\n" );
+< 						}
+<         | ID IASSIGN ID { 
+< 						  printf( "    movl       " );  
+<                           function_printtemp(function,$1);
+<                           printf( ", %%eax\n" );
+< 
+< 						  printf( "    movl       " );  
+< 						  printf( "    %%eax,    "); 
+<                           function_printtemp(function,$3);
+<                           printf( "\n" );
+< 						
+< 						}
+<         | ID IAND ID    { 
+< 						  printf( "    movl       " );  
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "    andl       " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " );
+< 						}
+<         | ID IOR ID     { 
+< 						  printf( "    movl       " );  
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "    orl        " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " );
+< 						}
+<         | ID IXOR ID    { 
+< 						  printf( "    xorl       " );  
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "    cmpl       " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " ); 
+< 						}
+< 
+<         | ID ISHL ID    {
+< 						  
+< 						  printf( "    movl       " );  
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+< 						  printf( "    mov        " );  
+<                           function_printtemp(function,$1);
+<                           printf( ", %%cl\n" );
+< 
+<                           printf( "    sall       " );
+< 						  printf( "    %%cl");
+<                           printf( ", %%eax\n" ); 
+< 						
+< 					    } 
+<         | ID ISHR ID    {
+< 						  printf( "    movl       " );  
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+< 						  printf( "    mov        " );  
+<                           function_printtemp(function,$1);
+<                           printf( ", %%cl\n" );
+< 
+<                           printf( "    sarl       " );
+< 						  printf( "    %%cl");
+<                           printf( ", %%eax\n" ); 
+< 		
+< 						} 
+---
+> binop   : ID IEQ ID     { }
+>         | ID INE ID     { }
+>         | ID IGE ID     { }
+>         | ID ILE ID     { }
+>         | ID IGT ID     { }
+>         | ID ILT ID     { }
+>         | ID IASSIGN ID { }
+>         | ID IAND ID    { }
+>         | ID IOR ID     { }
+>         | ID IXOR ID    { }
+>         | ID ISHL ID    { }
+>         | ID ISHR ID    { }
+361,397c207,210
+< 
+<         | ID ISUB ID    { printf( "    movl       " );
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "    subl       " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " );
+<                           printf( "%%eax\n" ); }
+< 
+<         | ID IMUL ID    { printf( "    movl       " ); 
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "    imull      " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " );
+<                           printf( " %%eax\n" ); }
+< 
+<         | ID IDIV ID    { printf( "    movl       " );
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "   idivl       " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " );
+<                           printf( " %%eax\n" );  }
+< 
+<         | ID IMOD ID    { printf( "    movl       " ); 
+<                           function_printtemp(function,$3);
+<                           printf( ", %%eax\n" );
+< 
+<                           printf( "    idivl      " );
+<                           function_printtemp(function,$1);
+<                           printf( ", " );
+<                           printf( "%%eax\n" ); 
+< 						  printf( "    movl    %%edx,    %%eax\n" ); } 
+---
+>         | ID ISUB ID    { }
+>         | ID IMUL ID    { }
+>         | ID IDIV ID    { }
+>         | ID IMOD ID    { }

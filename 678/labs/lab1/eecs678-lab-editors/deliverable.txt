@@ -1,0 +1,15 @@
+2294563 LAB1
+
+1. Split the window into panes using :split, then copy the 
+	first 12 lifes using 12yy. Switch to the other panes and 
+	past 'p'. Type :was to save and close. 
+
+2. Open new pane with :split, swap between them with 'ctwl' + 'w'  
+
+3. I'd put vim in the background using 'ctrl' + 'z' and then grep
+	for the function name. 
+
+4. :s/^\s\+\(\S*\)/\1/g
+
+5. :s/Bill Self/basket ball genius Bill Self/g
+   :set columns=80

@@ -1,0 +1,1 @@
+java -classpath antlrworks-1.4.3.jar org.antlr.Tool Lab6.g
