@@ -24,22 +24,24 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
+
   // pfd will not take the place of stdin  
   int pfds[2]; 
   pipe(pfds);
   dup2(pfds[1], 1);
   dup2(pfds[0], 0); 
-
   //find $1 name '*'.[ch] | xargs grep -c $2 | sort -t : +1.0 -2.0 --numeric --reverse | head --lines=$3
 	
   pid_1 = fork();
   if (pid_1 == 0) {
     /* First Child */
 
+	fprintf(stderr, "In child\n");
     char cmdbuf[BSIZE];
     bzero(cmdbuf, BSIZE);
-    sprintf(cmdbuf, "%s %s -name \'*\'.[ch]", FIND_EXEC, argv[1]);
+    sprintf(cmdbuf, "%s %s -name \'*\'.[ch]", FIND_EXEC, argv[0]);
     /* set up pipes */
+
 
 	if (execl(BASH_EXEC, BASH_EXEC, "-c", cmdbuf, NULL) < 0) {
 		
@@ -51,7 +53,23 @@ int main(int argc, char *argv[])
 
   pid_2 = fork();
   if (pid_2 == 0) {
-    /* Second Child */
+	fprintf(stderr, "In the next child\n");
+
+    char cmdbuf[BSIZE];
+    bzero(cmdbuf, BSIZE);
+    sprintf(cmdbuf, "%s %s -c %s", XARGS_EXEC, GREP_EXEC, argv[1]);
+	
+	printf("cmdbuf: %s\n", cmdbuf);
+
+	char readbuf[1000];
+	bzero(readbuf, 1000); 
+
+    //size_t length = read(pfds[0], readbuf, 1000);
+	printf("Buffer: %s\n", readbuf);
+	fflush(stdout);
+
+//    execl(BASH_EXEC, BASH_EXEC, "-c", cmdbuf, NULL);
+    
     exit(0);
   }
 

@@ -16,6 +16,10 @@ int main()
   /* XXX - need to declare pipes and make the pipe() system call before
    * forking any children
    */
+  int p[2];
+
+  pipe(p);
+
 
   pid_1 = fork();
   if (pid_1 == 0) { 
@@ -33,8 +37,9 @@ int main()
     /* read contents of file and write it out to a pipe */
     while ((rsize = read(rfd, buf, BSIZE)) > 0) {
       /* XXX - this should write to a pipe - not to stdout */
-      write(STDOUT_FILENO, buf, rsize);
+      write(p[1], buf, rsize);
     }
+
 
     close(rfd);
     return 0; 
@@ -43,17 +48,15 @@ int main()
   pid_2 = fork();
   if (pid_2 == 0) {
     /* process b */
-#if 0
     size_t rsize;
     char buf[BSIZE];
 
     /* read from pipe and write out contents to the terminal */
 
     /* XXX - this should read from a pipe - not from stdin */
-    while ((rsize = read(STDIN_FILENO, buf, BSIZE)) > 0) {
-      write(STDOUT_FILENO, buf, rsize);
+    while ((rsize = read(p[0], buf, BSIZE)) > 0) {
+      write(0, buf, rsize);
     }
-#endif
 
     return 0;
   }
