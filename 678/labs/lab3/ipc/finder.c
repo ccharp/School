@@ -6,6 +6,7 @@
 #include <sys/wait.h>
 
 #define BSIZE 256
+#define BUFF_LENGTH 5000
 
 #define BASH_EXEC  "/bin/bash"
 #define FIND_EXEC  "/bin/find"
@@ -39,7 +40,7 @@ int main(int argc, char *argv[])
 	fprintf(stderr, "In child\n");
     char cmdbuf[BSIZE];
     bzero(cmdbuf, BSIZE);
-    sprintf(cmdbuf, "%s %s -name \'*\'.[ch]", FIND_EXEC, argv[0]);
+    sprintf(cmdbuf, "%s %s -name \'*\'.[ch]", FIND_EXEC, argv[1]);
     /* set up pipes */
 
 
@@ -57,18 +58,19 @@ int main(int argc, char *argv[])
 
     char cmdbuf[BSIZE];
     bzero(cmdbuf, BSIZE);
-    sprintf(cmdbuf, "%s %s -c %s", XARGS_EXEC, GREP_EXEC, argv[1]);
 	
-	printf("cmdbuf: %s\n", cmdbuf);
 
-	char readbuf[1000];
-	bzero(readbuf, 1000); 
+	char readbuf[BUFF_LENGTH];
+	bzero(readbuf, BUFF_LENGTH ); 
 
-    //size_t length = read(pfds[0], readbuf, 1000);
-	printf("Buffer: %s\n", readbuf);
-	fflush(stdout);
+	close(pfds[1]);
 
-//    execl(BASH_EXEC, BASH_EXEC, "-c", cmdbuf, NULL);
+    size_t length = read(pfds[0], readbuf, BUFF_LENGTH);
+    sprintf(cmdbuf, "%s %s -c %s %s", XARGS_EXEC, GREP_EXEC, argv[2], readbuf);
+	fprintf(stderr, "cmdbuf: %s\n", cmdbuf);
+	//fprintf(stderr, "Buffer: %s\n", readbuf);
+
+    execl(BASH_EXEC, BASH_EXEC, "-c", cmdbuf, NULL);
     
     exit(0);
   }
