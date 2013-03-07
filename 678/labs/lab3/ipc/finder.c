@@ -25,7 +25,6 @@ int main(int argc, char *argv[])
     exit(0);
   }
 
-
   // pfd will not take the place of stdin  
   int pfds[2]; 
   pipe(pfds);
@@ -42,7 +41,6 @@ int main(int argc, char *argv[])
     bzero(cmdbuf, BSIZE);
     sprintf(cmdbuf, "%s %s -name \'*\'.[ch]", FIND_EXEC, argv[1]);
     /* set up pipes */
-
 
 	if (execl(BASH_EXEC, BASH_EXEC, "-c", cmdbuf, NULL) < 0) {
 		
@@ -67,13 +65,21 @@ int main(int argc, char *argv[])
 
     size_t length = read(pfds[0], readbuf, BUFF_LENGTH);
     sprintf(cmdbuf, "%s %s -c %s %s", XARGS_EXEC, GREP_EXEC, argv[2], readbuf);
-	fprintf(stderr, "cmdbuf: %s\n", cmdbuf);
+	
+    //sprintf(cmdbuf, "%s -c %s %s", GREP_EXEC, argv[2], readbuf);
+	
+	fprintf(stderr, "%s\n", cmdbuf);
+	//fprintf(stderr, "cmdbuf: %s\n", cmdbuf);
 	//fprintf(stderr, "Buffer: %s\n", readbuf);
-
+	
+    close(pfds[0]);
     execl(BASH_EXEC, BASH_EXEC, "-c", cmdbuf, NULL);
     
     exit(0);
   }
+
+  waitpid(pid_2, &status, 0);
+
 
   pid_3 = fork();
   if (pid_3 == 0) {
