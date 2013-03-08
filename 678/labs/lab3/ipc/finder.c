@@ -27,16 +27,27 @@ int main(int argc, char *argv[])
 
   // pfd will not take the place of stdin  
   int pfds[2]; 
+  int pfds1[2]; 
+  int pfds2[2]; 
+
   pipe(pfds);
-  dup2(pfds[1], 1);
-  dup2(pfds[0], 0); 
-  //find $1 name '*'.[ch] | xargs grep -c $2 | sort -t : +1.0 -2.0 --numeric --reverse | head --lines=$3
+  pipe(pfds1);
+  pipe(pfds2);
+
 	
   pid_1 = fork();
   if (pid_1 == 0) {
     /* First Child */
 
-	fprintf(stderr, "In child\n");
+	dup2(pfds[1], 1); 
+	
+	close(pfds[0]);
+	close(pfds[1]);
+	close(pfds1[0]);
+	close(pfds1[1]);
+	close(pfds2[0]);
+	close(pfds2[1]);
+
     char cmdbuf[BSIZE];
     bzero(cmdbuf, BSIZE);
     sprintf(cmdbuf, "%s %s -name \'*\'.[ch]", FIND_EXEC, argv[1]);
@@ -44,7 +55,6 @@ int main(int argc, char *argv[])
 
 	if (execl(BASH_EXEC, BASH_EXEC, "-c", cmdbuf, NULL) < 0) {
 		
-    	fprintf(stderr, "\nError executing find. ERROR#%d\n", errno);
     	return EXIT_FAILURE;
 	}
     exit(0);
@@ -52,46 +62,76 @@ int main(int argc, char *argv[])
 
   pid_2 = fork();
   if (pid_2 == 0) {
-	fprintf(stderr, "In the next child\n");
 
     char cmdbuf[BSIZE];
     bzero(cmdbuf, BSIZE);
 	
+	dup2(pfds1[1], 1); 
+    dup2(pfds[0], 0); 
 
-	char readbuf[BUFF_LENGTH];
-	bzero(readbuf, BUFF_LENGTH ); 
-
+	close(pfds[0]);
 	close(pfds[1]);
+	close(pfds1[0]);
+	close(pfds1[1]);
+	close(pfds2[0]);
+	close(pfds2[1]);
 
-    size_t length = read(pfds[0], readbuf, BUFF_LENGTH);
-    sprintf(cmdbuf, "%s %s -c %s %s", XARGS_EXEC, GREP_EXEC, argv[2], readbuf);
+    sprintf(cmdbuf, "xargs grep -c %s", argv[2]);
 	
-    //sprintf(cmdbuf, "%s -c %s %s", GREP_EXEC, argv[2], readbuf);
-	
-	fprintf(stderr, "%s\n", cmdbuf);
-	//fprintf(stderr, "cmdbuf: %s\n", cmdbuf);
-	//fprintf(stderr, "Buffer: %s\n", readbuf);
-	
-    close(pfds[0]);
     execl(BASH_EXEC, BASH_EXEC, "-c", cmdbuf, NULL);
     
     exit(0);
   }
 
-  waitpid(pid_2, &status, 0);
-
-
   pid_3 = fork();
   if (pid_3 == 0) {
-    /* Third Child */
-    exit(0);
+    char cmdbuf[BSIZE];
+    bzero(cmdbuf, BSIZE);
+	
+	dup2(pfds2[1], 1); 
+    dup2(pfds1[0], 0); 
+
+	close(pfds[0]);
+	close(pfds[1]);
+	close(pfds1[0]);
+	close(pfds1[1]);
+	close(pfds2[0]);
+	close(pfds2[1]);
+
+    sprintf(cmdbuf, "sort -t : +1.0 -2.0 --numeric --reverse");
+	
+    execl(BASH_EXEC, BASH_EXEC, "-c", cmdbuf, NULL);
+
+	exit(0);
   }
 
   pid_4 = fork();
   if (pid_4 == 0) {
-    /* Fourth Child */
+    char cmdbuf[BSIZE];
+    bzero(cmdbuf, BSIZE);
+
+    dup2(pfds2[0], 0); 
+
+	close(pfds[0]);
+	close(pfds[1]);
+	close(pfds1[0]);
+	close(pfds1[1]);
+	close(pfds2[0]);
+	close(pfds2[1]);
+
+    sprintf(cmdbuf, "head --lines=%s", argv[3]);
+	
+    execl(BASH_EXEC, BASH_EXEC, "-c", cmdbuf, NULL);
     exit(0);
   }
+
+
+	close(pfds[0]);
+	close(pfds[1]);
+	close(pfds1[0]);
+	close(pfds1[1]);
+	close(pfds2[0]);
+	close(pfds2[1]);
 
   if ((waitpid(pid_1, &status, 0)) == -1) {
     fprintf(stderr, "Process 1 encountered an error. ERROR%d", errno);
