@@ -9,10 +9,13 @@
 #include <algorithm>
 
 #include "viginere.cpp"
+#include "Timer.h"
 
 using namespace std;
 
 typedef map<int, unordered_map<string, bool>> Dictionary;
+
+int maxWordSize = 0;
 
 void getDictionary(Dictionary &dictionary) {
 	ifstream inFile("dict.txt");
@@ -41,6 +44,10 @@ void getDictionary(Dictionary &dictionary) {
 		
 		uMap[word] = true;
 	}	
+
+	if(word.length() > maxWordSize) {
+		maxWordSize = word.length();
+	}
 
 	// Add the last word length
 	dictionary[word.length()] = uMap;	
@@ -73,7 +80,6 @@ void generatePermutations(string s, vector<string> &ss) {
 
 	while(s != goal) {
 		
-		//cout << s << endl;
 		s[0] += 1;
 		
 		// If we need to carry
@@ -128,18 +134,51 @@ vector<string> crackKey(int keyLen, string word, Dictionary &dict) {
 	for(string key : keys) {
 		string decrypted = viginereCipher(word, key, DECRYPT);	
 		
-		//cout << candidate << endl;
-		
 		if(hashHasKey(decrypted, dict[word.length()])) {
 			candidates.push_back(key);	
-			cout << "Possible password: " << decrypted << endl;
 		}
 	}
 
 	return candidates;
 }
 
-void passwordCracker(
+/*vector<string> wordify(string s, Dictionary &dict) {
+	// find the largest possible word length
+	vector<string> words;
+	int maxLen = maxWordSize; 
+	int currIndex = 0; 
+	bool good = true;
+
+	while(currIndex < s.length() && good) {
+		for(int subLen = maxLen; subLen >= 2; subLen--) {
+
+			string subStr = s.substr(currIndex, subLen); 
+			//cout << subStr << endl;
+				
+			if(hashHasKey(subStr, dict[subStr.length()])) {
+				words.push_back(subStr);
+				currIndex += subLen;
+				cout << subStr << endl;
+
+				break; 
+			} 
+			// else if we can't find a word in the dictionary...
+			else if(subLen == 2) {
+				good = false;
+				break;
+			}
+		}
+	}
+}*/
+
+void printWords(vector<string> &words) {
+	for(string word : words) {
+		cout << word << " ";
+	}
+	cout << endl;
+}
+
+string messageCracker(
 	string cipherText, 
 	int keyLength, 
 	int firstWordLength,
@@ -150,21 +189,40 @@ void passwordCracker(
 
 	// For each key...
 	for(string key : keyCandidates) {
-		cout << key << endl;	
+		string decrypted = viginereCipher(cipherText, key, DECRYPT);
+
+		return decrypted;
+
+		// Assumes each word is in the dictionary
+		/*vector<string> words = wordify(decrypted, dictionary);
+		printWords(words); */
 	}	
 }
 
 int main() {
 	Dictionary dictionary;
-
 	getDictionary(dictionary);
 
-	passwordCracker(
-		"MSOKKJCOSXOEEKDTOSLGFWCMCHSUSGX",
-		2,
-		6,
-		dictionary
-	);
+	string encrypted;
+	int keyLen, firstWordLen;
+	while(cin >> encrypted) {
+		cin >> keyLen >> firstWordLen; 
+
+		Timer timer;
+		timer.start();
+
+		string decrypted = messageCracker(
+			"MSOKKJCOSXOEEKDTOSLGFWCMCHSUSGX",
+			keyLen,
+			firstWordLen,
+			dictionary
+		);
+
+		double elapsed = timer.stop();
+
+		cout << "Decrypted: " << decrypted << endl;
+		cout << "Duration: " << elapsed << endl;	
+	}
 
 	return 0;
 }
