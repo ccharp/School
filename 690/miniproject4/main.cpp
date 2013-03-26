@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <map>
 #include <unistd.h>
+#include <algorithm>
 
 #include "viginere.cpp"
 
@@ -25,10 +26,13 @@ void getDictionary(Dictionary &dictionary) {
 
 	// Get the first word
 	inFile >> word;
+	transform(word.begin(), word.end(), word.begin(), ::tolower);
 	int prevWordSize = word.length();
 	uMap[word] = true;
 
 	while(inFile >> word) {
+		transform(word.begin(), word.end(), word.begin(), ::tolower);
+		
 		if(word.length() != prevWordSize && !uMap.empty()) {
 			dictionary[prevWordSize] = uMap;	
 			prevWordSize = word.length();
@@ -122,10 +126,13 @@ vector<string> crackKey(int keyLen, string word, Dictionary &dict) {
 	// Find all possible keys
 	vector<string> candidates;
 	for(string key : keys) {
-		string candidate = viginereCipher(word, key, DECRYPT);	
+		string decrypted = viginereCipher(word, key, DECRYPT);	
 		
-		if(hashHasKey(candidate, dict[word.length()])) {
+		//cout << candidate << endl;
+		
+		if(hashHasKey(decrypted, dict[word.length()])) {
 			candidates.push_back(key);	
+			cout << "Possible password: " << decrypted << endl;
 		}
 	}
 
@@ -135,13 +142,16 @@ vector<string> crackKey(int keyLen, string word, Dictionary &dict) {
 void passwordCracker(
 	string cipherText, 
 	int keyLength, 
-	int firstWordLentgh, 
+	int firstWordLength,
 	Dictionary &dictionary
 ) {
 	string firstWord = cipherText.substr(0, firstWordLength);
 	vector<string> keyCandidates = crackKey(keyLength, firstWord, dictionary); 
 
 	// For each key...
+	for(string key : keyCandidates) {
+		cout << key << endl;	
+	}	
 }
 
 int main() {
@@ -149,12 +159,12 @@ int main() {
 
 	getDictionary(dictionary);
 
-	vector<string> keys;
-	generateKeys(2, keys);
-
-	for(string key : keys) {
-		cout << key << endl;	
-	}
+	passwordCracker(
+		"MSOKKJCOSXOEEKDTOSLGFWCMCHSUSGX",
+		2,
+		6,
+		dictionary
+	);
 
 	return 0;
 }
