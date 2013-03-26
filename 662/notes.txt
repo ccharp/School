@@ -1,0 +1,31 @@
+Tuesday - 
+Closure: function PLUS Deferred Substitution. 
+
+(define-type FAE-Value
+	(numV (n number?))
+	(closureV (param Symbol?)
+			  (body FAE?)
+		   	  (ds DeferredSub?)))
+
+;Assumes l and r are numV's already
+(define addv
+	(lambda (l r)
+		(numV
+			(+ (numV-n l)(numV-n r)))))
+	
+
+(define inter
+	(lambda (expr ds)
+		(type-case FAE expr 
+			(num (n) (numV n))
+			(add (l r) (addV
+						(interp l ds)
+						(interp r ds)))
+			(with ...)
+			(fun (param body)(closureV param body ds))
+			(app (fun-expr arg-expr)
+				(local ((define fun-val (interp fun-expr ds)))
+					(interp (closureV-body fun-val)
+							(aSub (closureV-param fun-val)
+								  (interp arg-expr ds)
+								  (closureV-ds fun-val))))))))
