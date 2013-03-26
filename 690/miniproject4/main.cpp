@@ -212,7 +212,7 @@ int main() {
 		timer.start();
 
 		string decrypted = messageCracker(
-			"MSOKKJCOSXOEEKDTOSLGFWCMCHSUSGX",
+			encrypted,
 			keyLen,
 			firstWordLen,
 			dictionary
