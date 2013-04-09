@@ -17,7 +17,7 @@ clean:
 tar:
 	make clean
 	mkdir $(STUDENT_ID)-pthreads_intro-lab
-	cp ptcount.c Makefile $(STUDENT_ID)-pthreads_intro-lab/
+	cp ptcount.c Makefile Report.txt $(STUDENT_ID)-pthreads_intro-lab/
 	tar cvzf $(STUDENT_ID)-pthreads_intro-lab.tar.gz $(STUDENT_ID)-pthreads_intro-lab
 	rm -rf $(STUDENT_ID)-pthreads_intro-lab
 
