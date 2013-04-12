@@ -1,0 +1,19 @@
+Report 2294563
+
+1. We are implementing the producer consumer model of threading. A producer fills some global resource and the 
+	consumer removes items from that resource. This poses some concurrency issues: a producer thread attempting
+	to fill a full data structure, or a consumer attempting to pull from and empty one. This implementation addresses
+	these problems with the help of a mutex that enforces mutual exclusion on the shared data structure two pthread
+	conditional variables to avoid the busy-wait problem
+
+2. The busy-wait is inefficient because it wastes CPU cycles spinning the while loop.
+
+3. I'm not particularly confident my solution is correct because it deadlocks on the second test. However, for
+	the other tests, as expected, the producer prints FULL only when the queue has five items in it and the 
+	consumer prints EMPTY only when the queue is empty. These operations resume when a notFull or notEmpty signal
+	is recieved, respectively. 
+		- Yes, each producer and consumer in the queue. After the item is produced, it is eventually consumed. 
+		- Yes, the producers produce the correct number of items and the consumers consume the correct number of 
+			items. 
+		- Yes, each thread exits appropriately. 
+		- No, it passes all tests but test 2. 
