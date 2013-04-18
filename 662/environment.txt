@@ -1,0 +1,35 @@
+(define-type ValueXStore ;; "Value Cross Store -- cartesian product"
+	(vxs (value BCFWAE-Value?)
+		 (store Store?)))
+
+(define interp
+	(lambda (expr env store)
+		(type-case BCFWAE expr
+			(num (n)(vxs (numV n) store))
+			(id (V)(vxs (lookup-env v env) store))
+			(add (l r)
+				(type-case ValueXStore (interp l env store)
+					(vxs (v1 s1)
+						(type-case ValueXStore (interp r env s1)
+							(vxs (v2 s2)
+								(vxs (addV v1 v2) s2))))))
+			(with (bound-id bound-expr bound-body)
+				(type-case ValueXStore (interp bound-expr env store)
+					(vxs (bound-value s1)
+						(interp bound-body (aSub bound-id 
+												 bound-value 
+												 env) 
+											s1)))))))
+			(fun (param body)
+				(sxv (closureV param body env) store))
+			(app (fun-expr arg-expr)
+				(type-case ValueXStore (interp fun-expr env store)
+					(vxs (fun-val s1) 
+						(type-case ValueXStore (interp arg-expr env s1)
+							(vxs (arg-val s2) 
+								(interp (ClosureV-body fun-val 
+										(aSub (ClosureV-param fun-val)
+											  arg-val
+											  (ClosureV-env fun-val))
+									s2)))))))))))))
+					
