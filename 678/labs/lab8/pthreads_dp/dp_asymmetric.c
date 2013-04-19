@@ -149,11 +149,15 @@ static void *dp_thread(void *arg)
       think_one_thought();
     }
 
-    /*
-     * Grab both chopsticks: ASYMMETRIC and WAITER SOLUTION
-     */
-    pthread_mutex_lock(left_chop(me));
-    pthread_mutex_lock(right_chop(me));
+	// If the id is even, we pick up left then right else we pick
+	//  up right then left
+	if(id % 2 == 0) {
+		pthread_mutex_lock(left_chop(me));
+		pthread_mutex_lock(right_chop(me));
+	} else {
+		pthread_mutex_lock(right_chop(me));
+		pthread_mutex_lock(left_chop(me));
+	}
 
     /*
      * Eat some random amount of food. Again, this involves a
@@ -167,7 +171,7 @@ static void *dp_thread(void *arg)
     /*
      * Release both chopsticks: WAITER SOLUTION
      */
-    pthread_mutex_unlock(right_chop(me));
+	pthread_mutex_unlock(right_chop(me));
     pthread_mutex_unlock(left_chop(me));
 
     /* 
