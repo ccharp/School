@@ -25,19 +25,33 @@ void printVec(int i, int j, vector<double> &v) {
 }
 
 int partition(int i, int j, int pivot, vector<double> &v) {
-
 	int store_i = i;
+	int piv_idx = -1;
 
-	for( ; i + 1 < j - 1; i++) {
-		if(v[i] == pivot) {
-			swap(i--, j, v);
-		} 
-		else if(v[i] < pivot) {
+	// Find the index of pivot
+	for(int x = i; x <= j; x++) {
+		if(v[x] == pivot) {
+			piv_idx = x;
+			break;
+		}		
+	}
+
+	if(piv_idx == -1) {
+		cout << "Error in partition\n";
+		return -1;
+	}
+
+	swap(piv_idx, j, v);
+
+	for( ; i < j; i++) {
+		if(v[i] < pivot) {
 			swap(store_i++, i, v);
 		}	
 	}
 
-	swap(j, store_i, v);
+	if(v[j] < v[store_i]) {
+		swap(j, store_i, v);
+	}
 
 	return store_i;
 }
@@ -45,16 +59,17 @@ int partition(int i, int j, int pivot, vector<double> &v) {
 double select(int i, int j, int k, vector<double> &A) {
 	int n = j - i;
 
+	//cout << "i: " << i << " j: " << j << " k: " << k << endl;
 
 	if(n < CUTOFF) {
-		sort(A.begin() + i, A.begin() + j);
+		sort(A.begin() + i, A.begin() + j + 1);
 		return A[i + k];
 	}
 
 	vector<double> medians;
 	int num_parts = n/r;
 
-	for(int i_m = i; i_m < n; i_m += r ) {
+	for(int i_m = i; i_m <= j; i_m += r ) {
 		
 		int j_m = i_m + r > j ?
 			j :
@@ -62,11 +77,11 @@ double select(int i, int j, int k, vector<double> &A) {
 		
 		int k_m = (j_m - i_m) / 2;
 
+		cout << "i_m: " << i_m << " j_m: " << j_m << " k_m: " <<k_m << endl;
 		medians.push_back(select(i_m, j_m, k_m, A));
-		
-		//cout << "i: " << i_m << " j: " << j_m << endl;
 	}
 
+	cout << "Medians: "; printVec(0, medians.size() - 1, medians);
 	int pivot = select(0, medians.size() - 1, medians.size() / 2, medians); 
 	int p = partition(i, j, pivot, A);
 
@@ -74,12 +89,15 @@ double select(int i, int j, int k, vector<double> &A) {
 	cout << "A: ";
 	printVec(i, j, A);
 
-	if(k < p) {
-		return select(i, p - 1, k, A); 	
+	if(k <= p) {
+		cout << "Calling on lower half.\n";
+		return select(i, p, k, A); 	
 	} 
 	else if (k > p) {
+		cout << "Calling on upper half.\n";
 		return select(p + 1, j, k - p + i - 1, A);			
 	} else {
+		cout << "HEY! THEY'RE EQUAL!\n";
 		return p;	
 	}
 }
@@ -104,17 +122,28 @@ int main() {
 		cout << "Enter a value for k (-1 to exit): ";
 		cin  >> k;
 		cout << "\n";
+
+		if(k == -1) {
+			break;
+		}
 			
 #else
 	//randomly get k value
 	//randomly build test data
 #endif
 
-	printVec(0, v.size() - 1, v);
+	if(k > v.size()) {
+		cout << "The value of k you entered is larger than the array of numbers."
+			 << "\nTry again. ";
+		continue;
+	}
 
-	int kth_smallest = select(0, v.size() - 1, k, v);
+	//partition(0, v.size() - 1, k, v);
+	//printVec(0, v.size() - 1, v);
 
-	cout << "The " << k << "'th number is "
+	int kth_smallest = select(0, v.size() - 1, k - 1, v);
+
+	cout << "The " << k << "th number is "
 		 << kth_smallest << endl;
 
 #if test
