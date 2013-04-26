@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <vector>
 #include <fstream>
+#include <time.h>
 
 #include "experiment.h"
 #include "Timer.h"
@@ -15,6 +16,7 @@ int CUTOFF = 100;
 #endif
 
 const int r = 7;
+const int NUM_TRIALS = 10;
 
 void swap(int i, int j, vector<int> &v) {
 	int tmp = v[i];
@@ -101,17 +103,26 @@ void performExperiment(const int n) {
 	Timer timer;
 
 	cout << "Commencing trials of size " << n << " .\n";
+	double sum = 0;
 
 	// Perform each experiment 10 times
-	for(int i = 0; i < 10; i++) {
+	for(int i = 0; i < NUM_TRIALS; i++) {
 		k = rand() % (n - 1);
 		generateRandomDataRange(n, v);
 
-		cout << "Trial " << i << ", k: " << k << ", time: ";
 		timer.start();
 		select(0, v.size() - 1, k, v);
-		timer.printTime(timer.stop());
+
+		double duration = timer.stop();
+		sum += duration;
+
+		cout << "Trial " << i << ", k: " << k << ", time: ";
+		timer.printTime(duration);
 	}
+
+	//Calculate and print average
+	double average = sum / NUM_TRIALS;
+	cout << "Average time: " << average << ".\n\n";
 
 	cout << endl;
 }
@@ -148,6 +159,7 @@ int main() {
 	}
 			
 #else
+	srand(time(NULL));
 	//randomly get k value
 	performExperiment(25000);
 	performExperiment(50000);

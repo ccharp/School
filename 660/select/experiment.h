@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <vector>
 #include <unordered_map>
+#include <time.h>
 
 #include "Timer.h"
 
@@ -17,7 +18,6 @@ using namespace std;
 void generateRandomDataRange(int n, vector<int> &v) {
 	unordered_map<int, bool> m;
 
-	srand(n);
 	v.clear();
 	while(v.size() <= n) {
 		int r = (int)rand();

@@ -32,4 +32,32 @@
 											  arg-val
 											  (ClosureV-env fun-val))
 									s2)))))))))))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(newbox (value-expr)
+	(type-case ValueXStore (interp value-expr env store)
+		(vxs (expr-value expr-store)
+			(local ((define new-loc (next-location)))
+				(vxs (boxV new-loc)
+					 (aSto new-loc expr-value expr-store))))))
+
+(openbox (box-expr)
+	(type-case ValueXStore (interp box-expr env store)
+		(vxs (expr-value expr-store)
+			(vxs value store (boxV-location expr-value) expr-store)
+				expr-store)))
+
+(setbox (box-expr value-exor)
+	(type-case ValueXStore (interp box-epr env store)
+		(vxs (expr-expr...
+				
+
+;; dude, this function is cool. 
+(define new-location
+	(local ((define loc (box 0))))
+	(lambda ()
+		(begin (set-box! loc (+ 1 (unbox loc)))
+			   (unbox loc))))
 					
