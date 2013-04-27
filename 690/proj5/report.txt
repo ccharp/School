@@ -1,0 +1,31 @@
+Observing packets from google.com:
+
+Wire shark was used to observe packets sent/received from google. To accomplish
+this, the following filter was used to filter out packets that were not to or
+from my local IP, 10.0.1.7:
+
+	ip.src == 10.0.1.7 || ip.dst == 10.0.1.7
+
+When www.google.com is entered into the address bar of the web browser, a DNS
+server must resolve the name to an address. In my case, my local router, 10.0.1.1, 
+had the DNS resolution cached, so no external DNS servers were needed. When 
+10.0.1.7 received the IP of google, I observed a series of https requests 
+exchanged between my machine, 10.0.1.7, and google, 74.125.139.103. This requests
+were the handshake, SYN and ACK. 
+
+Capture packets sent from other computers within the subnet:
+
+I wasn't sure if this meant capturing packets from other computers within
+the subnet in general (like 10.0.1.6 talking to google) or other computers
+talking to the wireshark host (10.0.1.7). Capturing the packets for the former
+would be difficult without configuring the network switch to mirror traffic to
+the wireshark host. An alternate method would be ARP spoofing. With this in mind
+I decided to observer the latter.
+
+I used the following filter to capture packets from within my subnet:
+
+	ip.src == 10.0.1.0/8 || ip.dst == 10.0.1.0/8
+
+I simply pinged 10.0.1.7 from 10.0.1.6. Wireshark showed packets sent between the
+two hosts via the ICMP protocal. Not much information about 10.0.1.6 can be gleaned
+from this except the remote hosts relative proximity and operating system. 
