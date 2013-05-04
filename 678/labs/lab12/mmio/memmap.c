@@ -78,18 +78,25 @@ int main (int argc, char *argv[])
 	 * 3. write a dummy byte at the last location 
 	 */
 	if(write(fdout, "a", 1) == -1) {
-		printf("Ah crap got an erro with fstat\n");
+		printf("Ah crap got an error with fstat\n");
 		exit(1);
 	}
 
 	/* 
 	 * 4. mmap the input file 
 	 */
-
+	if((src = mmap(NULL, size, PROT_READ, MAP_SHARED, fdin, 0)) == (void *)-1) {
+		printf("Ah crap got an error with mmap fdin\n");
+		exit(1);
+	}
 
 	/* 
 	 * 5. mmap the output file 
 	 */
+	if((dst = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fdout, 0)) == (void *)-1) {
+		printf("Ah crap got an error with mmap fdin\n");
+		exit(1);
+	}
 
 	/* 
 	 * 6. copy the input file to the output file 
@@ -98,8 +105,27 @@ int main (int argc, char *argv[])
 	 * stores what is in the memory location pointed to by src into
 	 * the memory location pointed to by dest.
 	 */
-	*dst = *src;
+	//*dst = *src;
+
+	memcpy(dst, src, size);	
 } 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
