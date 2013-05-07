@@ -1,0 +1,13 @@
+1. If the duration is too small, we won't see a change because it hasn't had a 
+chance to happen yet. In other words, we might see false positives for deadlocks,
+but false negatives will never happen. 
+
+2. As hinted at in the previous question, the method used to detecting deadlocks 
+in this program would be most effective on a singlethreaded system. This is because
+this system will only be executing our program and not away running other processes. 
+So, to answer the question, for best resultsthe busier the system with other processes, 
+the longer the sampling time.
+
+3. It's true but for the wrong reasons. A shorter ACTIVE_DURATION gives a higher 
+chance for false positives like the cases mentioned above.
+
