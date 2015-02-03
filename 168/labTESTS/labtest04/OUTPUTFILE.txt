@@ -1,6 +1,0 @@
-Student name             English        Math	   Science     Geography    History     GPA
-=================================================================================================
-         Taylor, John           B           A           A           A           A         3.8
-          Hanks, Tom           A           A           C           B           A         3.4
-       Eastwood, Clint           D           C           C           C           B           2
-      Elizabeth, Shannon           C           D           F           D           C         1.2

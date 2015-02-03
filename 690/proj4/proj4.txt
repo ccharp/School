@@ -1,5 +1,0 @@
-PKCS #1 SHA-1 With RSA Encryption
-
-2048 bits
-
-12/04/2013

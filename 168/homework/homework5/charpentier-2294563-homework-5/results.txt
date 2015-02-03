@@ -1,6 +1,0 @@
-Candidate    Votes Recieved   % of Total Votes
-===============================================
-y                 234               50.00
-x33                 234               50.00
-===============================================
- * y had the most votes with 234.00 and won the election.
