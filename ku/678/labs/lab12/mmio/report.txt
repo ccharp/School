@@ -1,0 +1,16 @@
+1. The read_write program is more reactive to buffer size because it means 
+more system calls (write and read) between kernel and userland. The 
+overhead associated with moving memory between the two spaces is the 
+main bottleneck for read_write. Not only do we have additional system
+call overhead, but we actually copy the entire contents of the file twice,
+once from kernel space to user space, and then again from user space 
+to kernel space. 
+
+2. Read_write allocates a buffer of size bufz, and uses it to copy data 
+from one file to another. The entire length of the buffer is alway copied. 
+Thus, if the size of the file being copied is not divisible by bufsz, we'll
+get a bunch of extra bytes appending to the end of the file equal to 
+sizeof(file) % bufsz. This can be corrected by using a fixed size buffer of
+1 or sizeof(file), or knowing sizeof(file) and keeping track of how many
+bytes have been written so far, terminating the copy procedure when that
+limit has been reached. 

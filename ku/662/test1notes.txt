@@ -1,0 +1,49 @@
+Currying: 
+	F1WAE
+
+Know first order functions
+
+Higherorder functions: functions can return functions (function composition).
+
+Firstclass functions: functions are treated as values in the language
+
+==========
+Enrich language to include increment operator:
+IFWAE :=
+	num
+	| (+... )
+	...
+	| (with...)
+	| (fun...)
+	| (inc IFWAE)
+	
+(define-type IFWAE
+	(num (n number?)
+	...
+	(inc (e IFWAE?)) ;from here we can add inc to interpreter or add inc to the elaborator 
+
+(define elab
+	(lambda (ifwae)
+		(typecase IFWAE ifwae
+			...
+			(inc (v)(add (elab v)(num 1))))))
+
+(define interp
+	(lambda (expr ds)
+		(typecase IFWAE expr
+			(...
+			(inc (e)(+ (interp e ds) 1))))))
+==========
+
+Dynamic vs static scoping:
+Static - predefined, uses DS at compile time
+Dynamic - defiend at runtime, uses DS that exists when the function is called
+
+; dynamic vs static scoping will affect the n
+(with (n 3) 
+	(with (f (fun (x)(+ x n))
+		(with (n f)
+			(f 7))))))
+
+Static scoping: result is 10, n = 3
+Dynami scoping: result is 12, n = 5

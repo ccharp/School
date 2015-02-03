@@ -1,0 +1,36 @@
+7: see slides	
+	pthread_init, pthread_create, pthread_join
+
+Chapter 4: 
+5: Disadvantage of many-to-one: can't take advantage of multicore machines
+
+8: Linux only dupilcates the thread that called the fork
+   Exec replaces the entire address space with the exec process. All threads are wiped. 
+
+10: synchronous signals are generated from inside the process (these will be associated with an instruction 
+	within the process [like keyboard input or a segmentation fault]), while asynchronous are generated outside 
+	the process. Synchronos signals a given to an exact thread. Asynchronous signals could be delivered to 
+	every thread in the process or a dedicated signal handling thread. 
+
+11: 
+
+Chapter 5:
+6: t_n-1 = alpha * t_n + (1-alpha) * tau_n 
+	alpha = .5
+	t = [4 10 10 10 2 6 10 10 6 4 4]
+	tau_0 = 6, t_0 = 4
+
+	tau_1 = .5*4 + (1 - .5) *6 = 5
+	tau_2 = 10
+	...
+
+9: (a) 35 tickets distributed: 1/35 chance of getting selected
+   (b) 25 tickets: short jobs given 1/5 the time (answer is incomplete
+	What percentage of CPU will be allocated? Chance of being picked corresponds to how long the CP will run. 
+
+10: PTHREAD_SCOPE_PROCESS, linux does not really support.
+
+Chapter 6: 
+2: Fairness is not guarenteed by this solution. Possible that the same thread wll enter the critical section over and over again. 
+
+

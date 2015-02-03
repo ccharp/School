@@ -1,0 +1,9 @@
+Script started on Wed 23 Feb 2011 02:02:18 PM CST
+You have used 2.25% of your allocated storage space.
+]0;ccharpen@1005d-3:/home/109/c/ccharpen/EECS_268/labs/lab05[?1034h[ccharpen@1005d-3 lab05]$ cat input.txt
+cat: input.txt: No such file or directory
+]0;ccharpen@1005d-3:/home/109/c/ccharpen/EECS_268/labs/lab05[ccharpen@1005d-3 lab05]$ cat input.txt
+asdfasdfasdfasdfasfasdfas
+]0;ccharpen@1005d-3:/home/109/c/ccharpen/EECS_268/labs/lab05[ccharpen@1005d-3 lab05]$ exit
+
+Script done on Wed 23 Feb 2011 02:03:09 PM CST

@@ -1,0 +1,20 @@
+
+What accounts for the inconsistency of the final value of the count variable compared to the sum of the local counts for each thread in the version of your program that has no lock/unlock calls?
+	Since count is a shared resource, the addition operation could 
+	be interrupted, leading to inconsistant and undefiend behavior. 
+
+If you test the version of your program that has no lock/unlock operations with a smaller loop bound, there is often no inconsistency in the final value of count compared to when you use a larger loop bound. Why?
+	Probably because it has less opportunity for interruption. A 
+	shorter loop might execute entirely before the CPU swithces 
+	contexts to another thread. 
+
+Why are the local variables that are printed out always consistent?
+How does your solution ensure the final value of count will always be consistent (with any loop bound and increment values)?
+	They're consistent because they're not shaired between threads. 
+	The shared count will always be consistent because the mutex
+	it's wrapped in enures that only one thread may access it at 
+	a time. 
+
+Consider the two versions of your ptcount.c code. One with the lock and unlock operations, and one without. Run both with a loop count of 1 million, using the time time command: "bash> time ./ptcount 1000000 1". Real time is total time, User time is time spent in User Mode. SYS time is time spent in OS mode. User and SYS time will not add up to Real for various reasons that need not concern you at this time. Why do you think the times for the two versions of the program are so different?
+	The time for the program with locks will be longer because the
+	threads have to wait on the shared resource to be free. 

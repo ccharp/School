@@ -1,0 +1,30 @@
+Corbin Charpentier 2294563
+
+
+
+
+Line 1: cin >> cstr1;
+line 2: strcpy(cstr1, cstr2);
+line 3: for(int i=0; i<MAX_SIZE; i++)
+	{
+		cout << cstr2[i];
+	}
+line 4: cin >> str1;
+line 5: str1 = str2;
+line 6: cout << str1 << endl << str2;
+
+line 7: strncpy(cstr1, cstr2, charNum);
+line 8: int length = cstr1.length();
+	cstr1[length + 1] = \o;
+line 9: str2.pushback(str1.at(i));
+line 10: strcmp(cstr1, cstr2)
+line 11: str1 == str2
+line 12: strcat(cstr1, cstr2)
+line 13: strcat(str1, str2)
+
+cin_tst.cpp
+
+	The first string ends at the first space. The second string begins at the first space. The function getline is 		executed after the first string is assigned. The program reads each character only once, from start to finish. 
+	Consequently, str2, which is found with the function, getline, includes the space and everything after the 
+	first word. When the enter key is pressed after "problem", the computer treads that as the entire input, so 
+	there is nothing for getline to get after that. 

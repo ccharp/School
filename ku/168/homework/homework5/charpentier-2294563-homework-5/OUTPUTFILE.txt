@@ -1,0 +1,78 @@
+********EECS 168 Score Report **********
+-----------------------------------------
+Student Name: John Taylor
+Lab Average: 87.143
+Test Average: 92.500
+Homework Average: 94.000
+Project Score: 85.000
+Total Score: 90.571
+-----------------------------------------
+Student Name: Tom Hanks
+Lab Average: 88.929
+Test Average: 92.500
+Homework Average: 88.000
+Project Score: 85.000
+Total Score: 89.339
+-----------------------------------------
+Student Name: Clint Eastwood
+Lab Average: 94.286
+Test Average: 92.500
+Homework Average: 94.000
+Project Score: 80.000
+Total Score: 90.643
+-----------------------------------------
+Student Name: Shannon Elizabeth
+Lab Average: 95.357
+Test Average: 92.500
+Homework Average: 94.000
+Project Score: 85.000
+Total Score: 91.804
+-----------------------------------------
+Student Name: Matt Damon
+Lab Average: 94.000
+Test Average: 92.000
+Homework Average: 93.600
+Project Score: 85.000
+Total Score: 91.300
+-----------------------------------------
+Student Name: Tom Cruise
+Lab Average: 93.357
+Test Average: 92.750
+Homework Average: 94.200
+Project Score: 95.000
+Total Score: 93.654
+-----------------------------------------
+Student Name: Nicole Kidman
+Lab Average: 91.571
+Test Average: 87.500
+Homework Average: 90.000
+Project Score: 92.000
+Total Score: 89.636
+-----------------------------------------
+Student Name: Edward Norton
+Lab Average: 92.714
+Test Average: 87.500
+Homework Average: 90.000
+Project Score: 85.000
+Total Score: 88.407
+-----------------------------------------
+Student Name: Gwyneth Paltrow
+Lab Average: 93.714
+Test Average: 92.500
+Homework Average: 94.000
+Project Score: 85.000
+Total Score: 91.557
+-----------------------------------------
+Student Name: Ashley Judd
+Lab Average: 81.786
+Test Average: 71.250
+Homework Average: 77.000
+Project Score: 85.000
+Total Score: 77.018
+-----------------------------------------
+Student Name: Ashley Judd
+Lab Average: 85.000
+Test Average: 85.000
+Homework Average: 85.000
+Project Score: 85.000
+Total Score: 85.000

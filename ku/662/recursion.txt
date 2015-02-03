@@ -1,0 +1,88 @@
+ecursion!
+; Always ask whether or not scoping is static or dynamic
+(with (fac (fun n)
+			(if0 n 1 (* n (fac (+ -1 n)))))
+		(fac 5))
+
+RCFA (recursive environment)
+
+RCFA := num
+		| (+ RCFA RCFA)
+		| (+ RCFA RCFA)
+		| id
+		| (fun (id) RCFA) 
+		| (RCFA RCFA)
+		| (if0 RCFA RCFA RCFA)
+		| (rec (id RCFA) RCFA) ;just like with but changes the environment in a different way
+		| (with ...)
+
+;In most languages, "with" is commonly referred ti as "let"
+
+
+(rec (fac (fun ...))
+	(fac 5)) ;now we have a recursive environment
+
+function "row" that generates environment
+
+(define-type Env
+	(intsub ...)
+	(aSub ...)
+	(aRecSub (name symbol?)
+			 (value boxed-RCFAE-value?)
+			 (env Env?)))
+
+(define bored-RCFAE-value? 
+	(lambda (y)
+		(and (box? v)
+			 (RCFAE? (unbox v)))))
+
+(define lookup
+	(lambda (x env)
+		(type-case Env env 
+		...
+		(aRecSub (bound-name boxed-bound-value not-env)
+			(if (symbol=? bound-name x)
+				(unbox boxed-bound-value)
+				(lookup name rest-env)))))
+
+(define interp
+	(lambda (expr env)
+		(type-case RCFAE expr 
+			...
+			(rec (bound-id named-expr bound-body) 
+				(interp bound-body
+					(cyclicically-bind-and-interp
+						bound-id named-expr env))))))
+
+(define cbai
+	(lambda (bound-id named-expr env)
+		(local ((define value-holder (box (numV 1179)))
+				(define new-env (aRecSub bound-id value-holder env))
+				(define named-expr-val (interp named-expr new-env))
+			(begin 
+				(set-box! value-holder named-expr-value)
+				new-env)))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
