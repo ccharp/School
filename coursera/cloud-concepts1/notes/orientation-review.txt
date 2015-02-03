@@ -1,0 +1,30 @@
+ORIENTATION LECTURE -- REVIEW
+1. basic datastructures
+    - queue: first in, first 
+        - instert and removal are concurrent
+    - stack: first in, last out
+        - insert and removal cannot be concurrent
+2. processes: program in action
+    - parts of process
+        - code, stack, program counter, heap and registers
+        - each thread contains it's own stack 
+3. computer architecture
+    - cpu, registers, cache, memory, disk (in decreasing locality)
+    - cpu loads instructions in batches
+4. big O notation
+    - describes the upper bound behavior of the algorithm
+    - worst-case performance
+5. basic proability
+    - set: collection of things
+    - subset: a collection of things that are part of a larger set
+    - for independent events, multiply them together to get the net probability
+        - if events are dependent, can't do this
+    - OR: prob(E1 OR E2) = prob(E1) + prob(E2) - prob(E1 AND E2)
+6. DNS
+    - DNS = Domain Name System
+    - collection of servers throughout the workd
+    - input: URL
+    - returns IP address of server that actually hosts the content
+    - IP may be server actually hosting the contnent or an indirection server (Content Distribution Server)
+7. Graphs
+    - vocab: edge, edge weight, node, vertex, adjacent
