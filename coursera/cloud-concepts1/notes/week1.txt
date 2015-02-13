@@ -1,0 +1,88 @@
+WEEK 1
+
+What is MapReduce?
+- "map" and "reduce" are functional language terms
+    - "reduce" is basically "fold"
+- WordCount example
+    - count words for very large dataset (shaekspears work)
+        - key value pair Key: string, Value: 1
+        - mapping process is parallelizable 
+        - Reduce merges all of the intermediate key-value pairs
+            - reduce is parallelizable: assign certain keys to each reduce task
+            - hash partitioning: hash a key to a task
+                - #task = hash(key) % number
+- Hadoop (Apache)
+    - open-source implementation of MapReduce 
+MapReduce Application Example: 
+    - Distributed Grep. Input: large set of files, output: lines that match the pattern
+        - Map: outpust line if it matches a supplied pattern
+        - reduce: simply copies data to output (no merging, actually)
+    - Reverse Web-Link Graph 
+        - input: (tuple (a,b) where page a points to page b
+        - output: show pages that link to each page in the list
+        - map: reverses the tuple (source, target) -> (target, source)
+        - reduce: list the key value <targer, list(source)>
+    - Count of URL access frequency
+        - input: log with all accessed URLS
+        - output: for each URL, % of total access for a URL out of entire log
+        - map 1: output <URL, 1>
+        - reduce 1: combine map's output <URL, URL_count>
+        - map2: takes <URL, URL_count>, <1, <URL, URL_count>>
+        - reduce 2: sums up the count to get the total number or URL accesses
+            - output: <URL, URL_count/overall_count>
+    - Sort
+        - intput: series of <key, value> pairs (already sorted [quicksort])
+        - output: sorted <value>s (already sorted [mergesort])
+        - map: <key, value> -> <value,_> (idently)
+        - reduce: <key, value> -> <key, value> (identity)
+        - partitioning function: partition keys accross reducers
+            - cannot use hashing, need to preserve sorting
+MapReduce Scheduling:
+    - User writes Map and Reduce method
+        - specifies number of tasks
+        - doesn't need to know anything about distributed programming
+    - Internal: parallelize map, transfer map data to reduce, pallelize reduce,
+                implement storage for all inputs and outputs
+        - **Reduce can't start until all Maps are finished (broken by actual implementation for optimization)
+            - called a "barrier"
+    - Solving the problems in the cloud!
+        - Parallelize map: each map can be run on any server
+        - Paralleize reduce: same thing. no Reducer overlap
+            - hashed Map output mapped to reduce via modulo
+        - Inputs and outputs handled by distributed file system 
+            - GFS (Google File System), HDFS (Hadoop File System)
+            - Map output (intermediate data) is kept in local disk on server it's run on. 
+                - Read from these remote disks
+                - Reduce done on same server, done for speed
+            - Reduce output available to distributed file system
+    - YARN schedule (Yet Another Resource Schedule)
+        - Container: some CPU + some memory
+            - 4 cores = 4 containers (can run 4 tasks)
+        - glogal Resource Manager: runs the schedule
+        - per-server Node Manager: respnosible for all server specific management. monitors task failures
+        - Per-application Application Master: communicates with Node Managers, negotiates containers with RM and NM
+            - parent of tasks, tasks can run on different Nodes, depending on what RM decides
+MapReduce Fault-Tolerance
+    - Server Failures to 
+        - NM sends heartbeats to RM
+            - when stops, failed, let's all AMs know
+        - NM keeps track of each task
+            - if fails, task is marked as idle, or AM or RM is notified
+        - AM sends heartbeat RM
+        - if RM fails, keep checkpoint to fall back to?
+    - Stragglers (slow nodes)
+        - Slowest machine slows down the entire job
+            - Reduce has to wait for all Map tasks to be completed
+        - Can be caused by a bad disk, network bandwidth, CPU, or RAM
+        - identify by keeping progress of task (% done)
+            - MapReduce AM could spni up another task of slow task on a different server
+                - "Speculative Execution"
+        - Locality
+            - Cloud has hierarchical topology
+            - GFS/HDFS typically store 3 replicas or each chunk (64mb) (for redundancy?)
+                - Map Speculative Executions are attempted to be scheduled on servers with replica
+                - otherwise it will try to put it on same rack 
+                - otherwise, anywhere
+            - Reduce is harder because input can come from manh machines
+
+            

@@ -28,3 +28,4 @@ ORIENTATION LECTURE -- REVIEW
     - IP may be server actually hosting the contnent or an indirection server (Content Distribution Server)
 7. Graphs
     - vocab: edge, edge weight, node, vertex, adjacent
+

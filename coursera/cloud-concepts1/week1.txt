@@ -1,0 +1,14 @@
+What is cloud?
+    - a cluster? a super computer? a datastore?
+    - no single, perfect definition
+    - for our purposes: lot sof storage + compute cycles nearby
+        - very data intensive
+    - single-site cloud (data center)
+        - computer nodes grouped into racks
+        - software servies (think CReSIS
+                                switch
+            top of rack switch            ...
+       rack1      rack2      rack3   ... ... ... ...
+    - distributed cloud
+        - multiple such sites, each with perhaps structure
+    
