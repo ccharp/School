@@ -1,0 +1,26 @@
+Week 2: Gossip
+Multicast Problem:
+    - Multicast: want to get information from single node to other computers. (think PC talking to NY stock exchange
+    - Requires FALT-TOLERANCE and SCALABILITYlk
+    - multicast protocal often sits at application layer
+    - Centralized Approach
+        - UDP/TCP packet -- simplest implimentation
+        - problems
+            - if sender fails halfway sending info to all nodes, many nodes will not receive info
+            - large burden on sender (resonsible for sending imfornation to all nodes
+    - Tree-Based
+        - UDP/TCP packet 
+        - tree can remain balanced. 
+        - each node passes message along to adjacdnet nodes
+        - Problem: 
+            - need to set up and maintain the tree
+            - falures near root of tree can cause large number of nodes to not receive message
+        - build spanning tree among the processes of multicast group
+        - use ACKs or NACKs to repaire multicasts not received
+        - SRM (Scalable Reliable Multicast) -- uses NACKS
+        - RMTP (Reliable Multicast Transport Protocol) -- uses ACKS
+            - re-transmit messages not ACKed
+        - still have O(N) scalable
+The Gossip Proticol - 
+
+        
