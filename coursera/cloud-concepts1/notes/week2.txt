@@ -22,5 +22,64 @@ Multicast Problem:
             - re-transmit messages not ACKed
         - still have O(N) scalable
 The Gossip Proticol - 
+    - PUSH gossip proticol
+        - periodically send random messages to b random targets (perhaps ever 2 seconds)
+            - b is called "gossibe fanout"
+            - gossip message is UDP
+        - infected nodes: term used to describe node that received gossip message
+            - they, in turn, send out the message to random nodes
+            - nodes can receive message multiple times (waste)
+        - Epidemic multicast (a.k.a. gossip)
+    - PULL gossip proticol
+        - instead of sending out gossips only when infected, send messages out all the time
+            - the messages are queries, "hey, have you received any new messages lately?"
+    - periodically send random messages to b random targets (perhaps ever 2 seconds)
+        - b is called "gossibe fanout"
+        - gossip message is UDP
+    - infected nodes: term used to describe node that received gossip message
+        - they, in turn, send out the message to random nodes
+        - nodes can receive message multiple times (waste)
+    - Epidemic multicast (a.k.a. gossip)
+Gossip Analysis (push gossip)
+    - Claimes: 1. is light weight
+               2. spreads message quickly
+               3. highly fault tolerant
+    - derived from study of epidemiology (Baily)
+    - should be covered in log(branching-factor) number of rounds
+        - highly reliable, low latency
+        - overhead on each node is alsy logatrhmic 
+        - this is okay because log(all IPv4 addresses) is 32.
+    - Fault-tolerance
+        - Packet loss?
+            - 0% packet loss only takes twice the number of rounds
+        - Fault-tolerance
+    - after about half the nodes have received the message PULL is faster than PUSH
+        - much, much faster
+    - these protocols are not topological aware
+        - could overload router
+        - Problem: suppose two subnets separated by router.
+            - about half messages will go accross router (remember, ramdom)
+            - fix: after subnet has been completed infected go accross subnet
+Gossip Implementation
+    - nothing interesting
+Group Membership
+    - Scenario: data center operator says there's not faiulres in data center
+        - in data centers, failurs are the norm--not the exception
+        - do you believe him? build a failure detecgtor
+            - perhaps write a distributed failure detection system?
+    - building a failure detection/correction system:
+        - group of processes
+        - membership list that contains list of all processes that have not failed
+            - accessed by many applications, perhaps gossip application
+            - membership protpcol
+            - disctinction between failure and leave
+            - list can be maintained by all processes complete, almost complete, or partially complete
+                - strongly consistent: complete list
+                - almost-complete: gossip style, SWIM, ...
+                - partial-random: SCAMP, T-MAN, Cyclon, ...
+            - dissemination: gives info about failure and maybe tries to correct
+            - each member as a list
+            - when process P_j crashes, failure detector component of "nearby" processes uses its
+              dissimenation component to tell all other processes about the failur.
+            - each process has it's own membership list
 
-        
