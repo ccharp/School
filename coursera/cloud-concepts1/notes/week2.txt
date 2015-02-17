@@ -82,4 +82,37 @@ Group Membership
             - when process P_j crashes, failure detector component of "nearby" processes uses its
               dissimenation component to tell all other processes about the failur.
             - each process has it's own membership list
+Gossip-style failure detection
+    - each node maintains a list of heartbeats and times for all other nodes
+        - local time (nodes could be in different time zones)
+    - periodically sends membership list to Gossip style pass nodes
+        - this way, heartbeats don't have to be sent to all other nodes
+        - lists are merged
+    - if beat isn't heard in T secnds, wait another T seconds (cleanup) before deleting that node from list
+        - why? all nodes will have needed to recognized the fail
+            - otherwise, ping-pong effect
+    - hearbet takes logn time to propagate (because it uses gossip) 
+Best failure detection scheme? (optimal)
+    - proof stuff on slides
+Another Probabilistic Failure Detection Scheme
+    - SWIM (Scalable weakly-consistent infection-style m?)
+    - no hearbeats 
+    - protocol period = T time units
+    - node pi tries to ping pj
+        - if it recievs an ack, it's satisfied for the period
+        - otherwise, it tries to ping in indirectly through another node (good visualization on slides)
+    - how does it compare to hearbeat?
+        - SWIM has constant detection and constant process load
+    - many failurs in system increase likelyhood of mistake
+    - round robin ping with random permutation of ping list after each traversal
+
+
+
+
+
+
+
+
+
+
 
