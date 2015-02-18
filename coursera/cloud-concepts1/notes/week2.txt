@@ -105,10 +105,53 @@ Another Probabilistic Failure Detection Scheme
         - SWIM has constant detection and constant process load
     - many failurs in system increase likelyhood of mistake
     - round robin ping with random permutation of ping list after each traversal
-
-
-
-
+Membership
+    - Disseminatino options
+        - Multicast: unreiable, multiple simultaneous multicasts
+        - Point-to-oint (TCP/UDP): expensive
+        - Zero Extra Messages: piggyback on detection messages (infection)
+            - "Epidemic" or gossip style dissemination
+            - so, failurs take O(log(n)) time to disseminate through the group
+    - suspicion mechanism
+        - False detections do to packet loss or perturbed processes.
+        - indirect pining may not solve the problem
+        - if failure detected, set process as suspected in pi's list. this is disseminated
+            - after timeout, pj is marked as failed. this is disseminated
+            - can be moved back to alive
+        - incarnation number: incrememted when process indicates that some other process is suspected
+            - higher incarnation numbers override lower ones
+            - suspect messages sent with incarnation numbers
+            - this way we can distinguish multiple suspicions of a process (because they may not have gotten there in time)
+Grids and Applications
+    - what do grid applications look like?
+    - Rapid Atmospheric Modeling System
+        - models weather 
+        - very computation intensive (HPC = High Performance Computing
+            - less data, more number crunching
+    - application can run on servers all over the workd
+    - scheduling is the main problem here (most computations are embarrisingly parallel
+    - Grid Scheduling --
+        - typically uses 2 level scheduling infrastructure
+        - Intra-site protocol
+            - HTCondor Protocol
+                - cycle scavenging system: typically run on a lot of workstations
+                    - grabs open cycles from workstations when they're free/idle
+                    - when interrupted, task is killed or moved
+        - Inter-site protocol
+            - Globus
+                - doesn't care about what the intra-protocol is at teach site
+                - allocates jobs to sites
+                - GridFTB: wide-area bulk data transfer
+                - GRAM5: Grid Resource Allocation Manager (not a schedule)
+                - RLS: Replica Location Service. names a service 
+        - security issues
+            - single sign-on. for all sites
+            - maps local security mechanisms
+            - delegations
+            - community authorization (third party)
+            - less issue for clouds, since clouds are under single controller (like Amazon)
+    - are grids converging towards cloud computing?
+        - compare OpenStack and Globus
 
 
 
