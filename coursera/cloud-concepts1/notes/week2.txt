@@ -33,13 +33,6 @@ The Gossip Proticol -
     - PULL gossip proticol
         - instead of sending out gossips only when infected, send messages out all the time
             - the messages are queries, "hey, have you received any new messages lately?"
-    - periodically send random messages to b random targets (perhaps ever 2 seconds)
-        - b is called "gossibe fanout"
-        - gossip message is UDP
-    - infected nodes: term used to describe node that received gossip message
-        - they, in turn, send out the message to random nodes
-        - nodes can receive message multiple times (waste)
-    - Epidemic multicast (a.k.a. gossip)
 Gossip Analysis (push gossip)
     - Claimes: 1. is light weight
                2. spreads message quickly
@@ -152,10 +145,3 @@ Grids and Applications
             - less issue for clouds, since clouds are under single controller (like Amazon)
     - are grids converging towards cloud computing?
         - compare OpenStack and Globus
-
-
-
-
-
-
-

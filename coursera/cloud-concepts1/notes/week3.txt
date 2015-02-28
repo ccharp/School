@@ -1,0 +1,49 @@
+P2P Systems
+
+Why Study P2P systems?
+    - P2P techniques pervasive in cloud computing systems
+    - key-value stores use Chord P2P hasing
+Napster
+    - 25% out of Madison Wisconsin was Napster
+    - Napster is now an open protocol
+    - each Napster client is called a peer
+    - files stored by peers at peer local
+    - filename is key to info about at napster server (lcation, etc.)
+        - server does not store any files
+    - all communication uses TCP
+    - problems
+        - servers are centralized point of congestion
+        - no security, plaintext messages and passwords
+Gnutella
+    - eliminates servers
+    -clients themselves act as servers, take on responsibilities
+        - called servents
+        - peers store peer pointers of neighbors
+        - forms network graph overlaid on internet (subgraph of internet)
+    - searching
+        - query, query hit, ping, pong
+        - query: contains minimum speed, search criteria
+            - only goes as far as TTL is no zero (TTL decremented at each neighbor as it transmits)
+                - ensures message des not circulate forever
+        - query hit: contains num hits, port, ip, speed, file info, servent_id
+            - query hits are reverse routed. follows path back to peer
+                - each peer remembers where query came from
+            - uses HTTP to transfer files
+                - GET
+            - if responding peer is behind firell
+                - can prevent messages from coming in
+                - allows anything going out
+                - if GET fails, remote peer sends PUSH back to requesting peer so that they can issue outgoing message
+                - if both are behind a firewall, Gnutella gives up
+        - ping: used to get to know neighbors, update membership list
+        - pong: respnose to ping
+            - ping and pong are needed because neighbors are constantly coming and going
+            - continuously refresh membership list
+    - problems
+        - ping and pong consume > 50% of traffic
+            - multiplex: cache to reduce frequency
+        - modem-connected hosts do not have enough bandwidth for passong Gnutella traffic
+            - use proxy server for such peers 
+        - freeloaders: 70% of users that only download files, do not serve out files
+        - why can't we intelligently send out messages so they don't hit ever node in the system?
+            - solution: "structured" P2P systems
