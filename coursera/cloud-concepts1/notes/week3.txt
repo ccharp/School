@@ -47,3 +47,69 @@ Gnutella
         - freeloaders: 70% of users that only download files, do not serve out files
         - why can't we intelligently send out messages so they don't hit ever node in the system?
             - solution: "structured" P2P systems
+FastTrack and BitTorrent
+    - like combination of Gnutella and Napster. 
+    - uses supernodes, nodes that have historically contributed the most and are fastest
+    - BitTorrent addresses lack of contribution by giving incentives
+        - has a series of trackers for each file
+            -maintains list of peers transferring the file
+                - gets heartbeats from peers
+        - two kinds of peers
+            - seeds
+            - leechers
+                - has some files, looking to download other blocks (can contribute some)
+        -file is split into blocks (usually around 256kb)
+        - uses Local Rarest First polcy to choose block to download
+            - local rarest meaning rarest among neighbors.
+        - tit for tat bandwidth usage
+            - provide blocks to users that provided good downloads in the past
+                - incentive for contributing
+        - choking limits number of neighbors for uploads going on
+            - periodically unchoke new neighbor (re-evaluate every few seconds)
+Chord
+    - Distributed Hash Table (DHT)
+        - store objects in nodes/machines in cluster
+        - problems
+            - load balancing. want want amout of stuff in each bucket (node)
+            - fault tolerance, nodes can fail
+            - efficiency and locality
+        - Napster, Gnutella, Fastrack, are all kind of DHTs
+            -but they don't really try to optimize regular hash operations (instert, etc)
+        - Chord tries to be more like a DHC
+            - Napster memory (n), loopup (1), messages for lookup (1)
+            - Gnutella memory(n), (n), (n)
+            - chord makes all operations log(n)
+                - this is almost constant accross IPv4 addresses (32)
+    - each node selects neighbors in intelligent fashion
+        - opposed to Gnutella that just used #files shared or something
+    - peer pointers: (used to route queries). places nodes on the rings
+        - Consistent Hashing    
+            - SHA-1 on IP address -> 160 bit string
+            - truncate to m bits called peer ID (number between 0-2^m - a)
+            - not unique but conflicts are very, very unlikely
+            - nodes are arranged in ring, each node knows it's successor (ascending IDs)
+        - Finger Tables
+            - ith entry at peer with id n is first peer with id >= ((n + 2^i) mod (2^m))
+            - look at slide 10 minutes in
+    - how are files placed?
+        -apply SHA-1 on file name
+        - map file to point in a ring, stored at first peer
+    - 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
