@@ -94,7 +94,42 @@ Chord
     - how are files placed?
         -apply SHA-1 on file name
         - map file to point in a ring, stored at first peer
-    - 
+    - chord implementations can be found in many key-value pair DBs
+Chord Falure Detection:
+    - when nodes fail, lookups may go wrong
+    - replicate files incase node fails
+    - churn: rate at which nodes leave and join system
+        - need to update ring and finger table entries
+        - could leave to excessive copying
+    - stabilization proticol taksl n^2 rounds
+P2P Systems: Pastry
+    - assignes IDs to nodes using consistent hasing function (like chord)
+    - maintains neighbors a little differently
+        - uses prefixing mapping instead of formula above (Hypercube routing), log(n)
+        - short hops to neighbors
+    - m bit id means m neighbors stoed
+        - ex id: 01110100101
+            - store *, 0*, 01*, 011*
+            - match largest matching prefix
+            - clostest candidate used if collision with id prefix
+    - possible to design system with O(1) lookup costs?
+P2P Systems: Kelips
+    - consant lookup cost to destributed hashtable
+    - no virtual ring
+    - k affinit groups
+        - k ~ sqrt(n)
+        - k groups
+    - every peer belongs to a group
+        - each peer knows about every other peer in the group
+        - each group contains about k nodes (K*K=n)
+    - loopup:
+        - hash to get gruop #
+        - contact neigh of necessary
+    - updating neighbors
+        - gossip protocols (week 2 lectures)
+    - uses slgithly more bandwidth to keep things maintained
+    tradeoffs with Chord and Pastry
+    
     
     
     
