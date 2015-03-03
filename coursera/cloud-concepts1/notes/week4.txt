@@ -1,0 +1,124 @@
+KEY-VALUE STORES
+- Twitter uses them for tweets
+    -distrubted hash table
+        - for when you have too much data to store
+- problem with relational database
+    - problems are large and often unstructured
+    - a lot of writes compared to reads
+    - foreign keys and joins are not often needed in today's work-loads
+- needs of today:
+    - speed
+    - avoid Single Point of Falure (SPoF)
+    - minimize Total Cost of Operation (TCO)
+    - incremental scalability
+    - "scale out, not up"
+        - scale up: grow cluster by replacing with more powerful machines
+            - not cost effective
+            - need to replace often
+        - scale out: grow cluster by adding more COTS machines (Components Off the Shelf)
+            - cheaper
+            - over long duration, phose in few newer machines and phase out old ones
+            - used by most companies 
+- NoSQL
+    - "Not Only SQL"
+    - necessary API operations: get(key), put(key, value)
+    - Tables
+        - Cassandra calls them "Column Families"
+        - MongoDB: collection
+        - like RDBMS but
+            - may be unstructured (no schema imposed)
+            - might have missing columns
+            - no foreign keys or joins (usually)
+- Column-oriented storage
+    - RDBMSs store entire row together
+    - NoSQL systems typically store columns together (or group of columns)
+    - faster and don't need to fetch entire table
+    - eg get blob_ids from blog table in the past month
+        - search in the last_updated column, fetch corresponding blog_id column
+        - don't need to fetch other columns
+Apache Cassandra
+- distrubted key-value store
+- originally designed at Facebook for messaging
+- inside Cassandra: 
+    - uses ring from DHT
+    - client sends query to Coordinator
+    - one ring present per data center
+    - no finger tables!
+    - coordinated forwards query to appropriate replicas of key
+    - mapping from key to server
+        - handled by partitioner
+        - Data Placement Strategies
+            - Simple Strategy
+                - Random Partitioner: chord-like hash partitioning
+                - ByteOrdered Partitioner
+                    - assignes ranges of keys to servers
+                    - useful for "range queries" (get all twitter users starting with [a-b]
+            - Network Topology Strategy
+                - two replica's per DC
+                - three replica's per DC
+                - first replica placed according to Partitioner
+                - go around ring until you hit a different rack
+                    - want keys on different rack (fault tolerance)
+    - Snithces: map IPs to racks and DCs
+        - SimpleSnitch: unawayre of toplogy 
+        - rackInferring: assumes topology of network bo octet of server's IP address
+            - 101.102.103.104 = x.<DC octet>.<rack_octet>.<node octet>
+        - PropertyFileSnitch: perfectly accurate. uses config file
+        - EC2Snitch: EC2 Region = DC, Availabilit Zone = rack
+    - writes and reads
+        - writes need to be lock free and fast
+        - client sends write to one coordinator node in Cassandra cluster
+            - coordinator may be per-key, per-client, or per-query (what?)
+            - coordinator uses partitioner to send query to all replica nodes respnosible for key
+            - when X replicas respond, coordinate returns ack to lcient
+        - keys are always writable (no locking, not down)
+            - Hinted Handoff:
+                - when any replica is down, coordinator writes to all other replicas and keeps it locally until down replicas come back up
+                - when all replicas are down, coordinator buffers writes locally for a few hours
+        - one wring per data centeR:
+            - DC coordinator elected to coordinate with other DCs
+            - osmething about a zoo keeper
+        - what does replica server to when received a write?
+            - log it to disk commit log (for failure recovery)
+            - make changes to memtables
+                - doesn't write directly to disk for speed
+            - when memtable is full or old, it's flushed to disk
+                - SSTable (key, position of data in sstable) of pairs
+                - Bloom filter for efficient search
+                    - easy to check to existence
+                    - can instert
+                    - can have false positives, but not false negatives
+                    - basically it's a bitmap. each key maps to set of bits in the bitmap.
+                        - possible that key was never instereted (part of bits set by some key, othe rparts set by another)
+                        - however, this is very low with 4 hashing functions (0.02%)
+                        - can be further mitigated by adding more bits to bloom table
+                - delete
+        - read is very similar to write
+            - coordinator contacts X replicas
+            - when replica's resond, coordinate returns latest-timestammepd value 
+            - if replicas a different, initiate a "read repair"
+            - row may be split across multiple SSTables
+                - reads may need to touch multiple SSTables, therefore reads usually slower than writes, but still fast!
+                - this happens if compaction hasn't happened often enough
+    - mempership
+        - every server needs to know about all other servers present in cluster
+        - gossip style membership lists :D
+        - suspicion mechanisms to adaptively timing out 
+        - accrual detector: uses PHI output
+            - PHI: looks at last arrival time and other arrivals (probabalistic)
+                - historically slower servers have longer timtouts
+                - faster servers have shorter timeouts
+- spped?
+    - about 10x faster than MySQL
+    - what did we lose?
+         - discussed in next lecture.
+
+
+        
+
+
+
+
+
+
+
