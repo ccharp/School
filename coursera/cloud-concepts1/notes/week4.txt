@@ -238,7 +238,13 @@ Lamport Timestamps
     - whenever processes sends message, counter is incremented
     - sent message also carries timestamp
         - used by receiving timestamp, looks at local value, takes max, and adds 1
-            
+Vector Clocks
+- yet another way of assigning timestamps
+- each process maintains a vector
+- like Lamport clock, 1) increments ith element of vector clock
+                      2) each message carries the send event's vector timestamp V[1..N]
+                      3) receiver takes of incoming timestamp and takes mach of each i and increments them by one
+
 
 
 
