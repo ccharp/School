@@ -112,9 +112,133 @@ Apache Cassandra
     - about 10x faster than MySQL
     - what did we lose?
          - discussed in next lecture.
-
-
-        
+Mystery of X:
+- CAP Theorem
+    - 3 properties of distributed system
+        - 1. consistency: all nodes see same data at same time
+            - think accessing bank from multiple clients (mobile, pc, ect.)
+            - booking a flight: all clients should see same seats as they're available
+        - 2. availability: everything works all the time and quickly
+            - high latency means less revenue
+            - Service Level Agreements: contract for latencies basically
+        - 3. partition-tolerance: system continues to work inspite of network partitions
+            - DNS outtages
+            - routing outages
+            - undersea cable cut
+            - etc. 
+    - only 2 of these 3 things are possible at a time
+    - Partition-tolerance is usually a given, so we're choosing between consistency and availability
+    - Cassandra goes for availability
+    - RDBMSs go for consistency
+- eventual consistency
+    - given a key, suppose all writes to that key stop
+        - all values (replicas) will converge eventually
+        - if writes continue, system will continue trying to converge
+        - works well when periods of low writes
+            - not so well of a lot of consecutive writes
+- RDBMS ACID
+    - Atomicyt, Consistency, Isolaction, Durability
+- Key-vlaue stores BASE
+    - Basically Available Soft-state Eventual Consistent
+- so how do we specify the value of X?
+    - X is a Consistency Level
+    - can be:
+        - ANY: any server may be replica
+            - fastest. even allows coordinated to store value before returning ACK to client
+        - ALL: all replicas
+            - ensures all replicas are consistent. Strongest cinsistency
+        - ONE: at least one replica
+            - faster than ALL, but cannot tolerate a failure
+        - QUORUM: quorum across al replicas in datacenter
+    - what is a quorum?
+        - majority, > 50%
+            -therefore, at least one server from a different rack will be in quorum
+        - don't require all replicas to return ACK
+            - faster than ALL but still strongly consistent
+Consistency Spectrum
+    tradeof:
+- consistency spectrum: Eventual -> strong
+- read writes:          slow      <- fast
+- per-key sequential: per key, all operations have a global order (per key coordinator)
+    - CRDTs (Commutative REplicated Data Types): reversing order gives same result
+        - eventually, servers don't need to worry about consistency
+    - red-consistency: rewrite client transatcionts int red or blue operations
+        - blue ops can be executed in any order
+        - red ops need to be executed in order
+    - Causal Consistency: reads must respect partial order based on imformation flow (what?)
+        - reads obeys causality (cause path from previous writes by same user, for example)
+- Stong Consistency Models
+    - Lineraizability: each operation by  aclient is visislbe instantaneously (hard to do, ovbiously)
+    - sequential consistency: re-ording obeys causality, writes before reads, etc.
+    - ACID properties in NewSQL stuff. (Google's Tracker)
+NoSQL: HBase
+- Yahoo's opensource project of Google's BigTable
+- API functions: 
+    - Get, Put
+    - Scan(row range, filter) (all user names, etc)
+    - prefers consistency over available
+- architecture:
+    - zookeeper coordinates client and server
+    - HRegionServer
+        - hspace table split across regions
+            - column family
+            - for every column family within a region, maintain a store and memstore    
+                - these stores are flushed to disk every so often
+                    - HFile is an SSTable
+- how does it maintain strong consistency?
+    - HLog
+        - written to before writing to MemStore to recover from failure
+        - replays logs when recovery or booting up
+    - cross-datacenter replication
+        - master and slave DCs
+            - master sends logs to slaves
+            - coordination done by zookeeper
+Time and Ordering
+- don't want to be early or late, perfectly sychronized
+- clocks have to be in sync, local and server
+- events in a process can be timestamed and thus can be ordered linearly
+- clock scew: relative difference in clock VALUES of two processes
+- clock drift: relatie difference between SPEED of two processes
+- MDR (maximum drift rate)
+    - maximum drift rate = MDR * 2
+    - Maximum acceptible skew M, need to synch clocks every M / (2 * MDR)
+- Extrenal and interal Synchronization
+    - external: each processes's clock is within bound D of a well-known external group
+    - internal: every processes in group is within bound D
+Cristian's Algorithm
+- uses RTT (round trip time)
+- Cristian's Algorithm works between a process P, and a time server S — connected to a source of UTC (Coordinated Universal Time). Put simply:
+    1. P requests the time from S
+    2. After receiving the request from P, S prepares a response and appends the time T from its own clock.
+    3. P then sets its time to be T + RTT/2
+Time and Ordering
+- NTP - network time protocol, used to synchronize
+- each client is a leafe node
+- primary and tertiary servers
+- how does it work?
+    - child wants to synch clock
+    - parent responds with with time
+    - child sends time
+    - parent again sends time
+    - child uses these values to set clock (multiple times reduces error
+        - offset o = (tr1 - tr2 + tr2 - tl2)/2
+        - thus error is bounded by round-trip time
+        - BUT, we still have error....
+Lamport Timestamps
+- instead of tryin to synch, just put them in the right order- instead of tryin to synch, just put them in the right order 
+    - uses causality as above
+- almost all distributed systems like this
+- how does it work?
+    - three rules: 1) if events a and b are on the same process, if time(a) < time(b), b happend before
+                   2) if p1 sends message to p2: send came before the receive
+                   3) transitivity, extends rule 2. a->b, b->c then a->c
+    - but not all events are related
+- so how are time stamps actually assigned?
+    - use a local counter, starts at zero for each processes (local counter)
+    - whenever processes sends message, counter is incremented
+    - sent message also carries timestamp
+        - used by receiving timestamp, looks at local value, takes max, and adds 1
+            
 
 
 
