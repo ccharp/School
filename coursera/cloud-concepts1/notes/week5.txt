@@ -1,1 +1,76 @@
-
+SNAPSHOTS
+What is a Global Snapshot?
+- one solution? synch clocks
+    - always has error
+    - not necessary, CAUSALITY is enough
+        - all that matters is change of state
+    - may not capture channel state
+      - messages that are in transit
+Global Snapshot Algorithm
+- goal: record global snapshot that records state for processes and channels in system
+- n processes in system, there is a channel between each process
+    - Pj -> Pi and Pi -> Pj
+    - channels are FIFO
+    - no failures
+    - all messages arrive intact
+- snapshopt calculation:
+    - must not interfere with normal operations
+    - each process should be able to record it's own state
+    - global state is controlled in a distributed manner
+    - any process may initiate a snapshot
+- algorithm Chandy-Lamport:  
+  - initiator Pi records its own state
+  - initiator creates special marker messages
+      - not an application message
+  - for j=1 to N except i
+      - Pi sends out marker on outgoing channel Cij
+  - states recording incoming messages for each incoming channel of Pi
+  - when a process recieves a marker:
+      - if first time Pj receives a maker
+        - pj records it's own state
+        - pj makes state of channle cji as empty
+        - for k=1 to N except j
+          - pj sends out maker messages to Cjk
+      - else
+          - mark state of channel Ckj
+  - central server collects snapshot pieces to obtain the full global snapshot
+  - not correct, but CAUSALLY correct
+Consistent Cuts (explains why causally correct)
+- cut: time frontier at each process and channel
+    - at each process and each channel you choose a time point, everything to the let is in, everything to right is out
+- consistent cut: a cut that obeys causality
+    - receiver can't be to left while sender is to right
+- cut occurs at teach process when the global snapshot is calculator
+- any run of the Chandy-Lamport algorith runs in a consistent cut
+How are snapshots used? Safety and Liveness
+- correctness: use liveness and safety to determine correctness
+- liveness: guarentee that something good will happen ...eventually
+    - for example, 100m dash, someone will cross
+       - criminal will eventual be jailed
+    - guarentee system will terminate
+- safety: guarentee that something bad will never happen
+    - example, peace treaty
+    - DS example: no deadlock, no orphaned objects, accurate failure detectors, consistent consensus
+- it's very hard to guarentee both.
+    - failure detector: completeness (liveness), accuracy (safety)
+- liveness property Pr: in every state, there is some causal path of global states from S to S' where S' satifies Pr
+- safety property Pr: S satifies Pr, and all global states S' reachable from S also satisfy Pr
+- how do we use snapshtos to detect global properties?
+- stable properties: once true, always stay true
+- chandy-lamport can be used to detect stable properties
+Muticast Ordering
+- used by key-value stores, online scoreboards, stock exchange, etc
+- types of ordering
+    - fifo
+        - doesn't care about ordering of different processes
+    - causality
+    - total ordering
+        - may not say anything about the order in which messages are sent
+        - it just ensures that all receives receive all messages in the same order
+    - hybrids
+How to implement orderings?
+    - datastructures
+    - each receiver maintains 
+Reliable Multicast
+- 
+  
