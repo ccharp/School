@@ -73,4 +73,14 @@ How to implement orderings?
     - each receiver maintains 
 Reliable Multicast
 - 
+Virtual Synchrony
+- how to combine failure detection with multicast
+- attemts to preserve ordering and reliability
+- membership list is called a "view"
+- update to membership list is called a "view change"
+- virtual synchrony guarnetss all view changes are delivered in the same order at all correct processes
+    - what happens in a view stays in that view
+- can be removed from gruop if not acting as group (if Pi failes to be delivered)
+
+
   
