@@ -33,20 +33,20 @@ int nodeCount = 0;
  */
 class Application{
 private:
-	// Address for introduction to the group
-	// Coordinator Node
-	char JOINADDR[30];
-	EmulNet *en;
+    // Address for introduction to the group
+    // Coordinator Node
+    char JOINADDR[30];
+    EmulNet *en;
     Log *log;
-	MP1Node **mp1;
-	Params *par;
+    MP1Node **mp1;
+    Params *par;
 public:
-	Application(char *);
-	virtual ~Application();
-	Address getjoinaddr();
-	int run();
-	void mp1Run();
-	void fail();
+    Application(char *);
+    virtual ~Application();
+    Address getjoinaddr();
+    int run();
+    void mp1Run();
+    void fail();
 };
 
 #endif /* _APPLICATION_H__ */

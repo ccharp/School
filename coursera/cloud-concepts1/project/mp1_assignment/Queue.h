@@ -17,13 +17,13 @@
  */
 class Queue {
 public:
-	Queue() {}
-	virtual ~Queue() {}
-	static bool enqueue(queue<q_elt> *queue, void *buffer, int size) {
-		q_elt element(buffer, size);
-		queue->emplace(element);
-		return true;
-	}
+    Queue() {}
+    virtual ~Queue() {}
+    static bool enqueue(queue<q_elt> *queue, void *buffer, int size) {
+        q_elt element(buffer, size);
+        queue->emplace(element);
+        return true;
+    }
 };
 
 #endif /* QUEUE_H_ */
