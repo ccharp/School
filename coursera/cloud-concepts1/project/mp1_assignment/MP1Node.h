@@ -31,6 +31,7 @@
 enum MsgTypes{
     JOINREQ,
     JOINREP,
+    ALLTOALL,
     DUMMYLASTMSGTYPE
 };
 
@@ -75,7 +76,80 @@ public:
     Address getJoinAddress();
     void initMemberListTable(Member *memberNode);
     void printAddress(Address *addr);
+    void memberListMerge(vector<MemberListEntry>& v);
+    Address createAddress(const int id, const short port);
+    int findMemberListEntry(int id);
     virtual ~MP1Node();
+};
+
+// CSC: caller's responsibility to free
+class Message {
+public:
+    Message(MsgTypes msgType, Address& addr, int heartbeat, char* data, size_t dataSize) {
+        Base base;
+        base.msgHdr.msgType = msgType;
+        memcpy(&base.addr, addr.addr, sizeof(base.addr));
+        base.heartbeat = heartbeat;
+
+        mSize = sizeof(base) + dataSize;
+        mBuffer = (char*)malloc(sizeof(base) + dataSize); 
+
+        memcpy(mBuffer, &base, sizeof(base));
+
+        if(data) {
+            memcpy(mBuffer + sizeof(base), data, dataSize);
+        }
+    }
+
+    Message(char* data, size_t size) {
+        mBuffer = data;
+        mSize = size;
+    }
+
+    MessageHdr getMessageHdr() {
+        return ((Base*)mBuffer)->msgHdr;
+    }
+
+    void getAddr(char* output) {
+        memcpy(output, ((Base*)mBuffer)->addr, 6);
+    }
+
+    int getHeartbeat() {
+        return ((Base*)mBuffer)->heartbeat;
+    }
+
+    char* getMiscData() {
+        return mBuffer + sizeof(Base);
+    }
+
+    char* getAllData() {
+        return mBuffer;
+    }
+
+    size_t getSize() {
+        return mSize;
+    }
+
+    size_t getSizeMiscData() {
+        return mSize - sizeof(Base);
+    }
+
+    ~Message() {
+        // CSC: caller's responsibility to free
+        //free(mBuffer); 
+    }
+
+private:
+    size_t mSize;
+    char *mBuffer;
+
+    struct Base {
+        MessageHdr msgHdr;
+        char addr[6];
+        int heartbeat;
+    };
+
+    Message() {};
 };
 
 #endif /* _MP1NODE_H_ */
