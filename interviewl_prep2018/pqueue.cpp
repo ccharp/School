@@ -30,6 +30,7 @@ private:
     void trickleUp () {
         int currIdx = mData.size() - 1;
         int parentIdx = getParent(mData.Size());
+        
         while(parentIdx != -1 && mData[currIdx] > mData[parentIdx]) {
             swap(mData[currIdx], mData[parentIdx]);
             currIdx = parentIdx;
