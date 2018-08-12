@@ -98,19 +98,42 @@ void bellmanFord(Graph const& g) {
 
 }
 
+truct Edge {
+    int u;
+    int v;
+    int weight;
+    Edge(int uin, int vin, weightin) : u(uin), v(vin), weight(weightin) {}
+}
+
+// For finding minimal spanning tree
 Graph prim(Graph const& g) {
+    auto comp = [](Edge e1, Edge e2){return e1.weight < e2.weight};
+    priority_queue<Edge, vector<Edge>, decltype(comp)> pq(comp);
+    unordered_set<int> covered;
 
-    // Initialize set of unvisited vertices
-    unordered_set<int> vertsToAdd;
-    // choose a vertex
-    // Add edges to priority queue
-    // select top element in priority queue, add it to the solution
-    priority_queue<int> q;
-    // initialize q somehow
-    Graph minTree;
-    while(!vertsToAdd.empty() && !q.empty()) {
-
+    auto insertEdges = [&](const int u, unordered_map<int, int> const& neighbors) {
+        for(auto neighbor : neighbors) {
+            if(covered.find(neighbor.first) != covered.end()) {
+                continue;
+            }
+            pq.insert(Edge(u, neighbor.first, neighbor.second));
+        }
     }
 
-    return minTree;
+    // Outer loop ensures we cover disconnected components
+    for(int root = 0; root < g.size(); root++) {
+        covered.insert(root);
+        insertEdges(root, g[root].neighbors);
+
+        Graph mst(g.size());
+        while(!pq.empty()) {
+            Edge const& e = pq.top(); pq.pop();
+            covered.insert(e.v); // We don't have to check e.u because we know it was covered already
+            mst[e.u][e.v] = e.weight;
+
+            insertEdges(e.v, g[e.v])
+        }
+    }
+
+    return mst;
 }
