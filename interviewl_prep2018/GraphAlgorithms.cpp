@@ -86,8 +86,31 @@ void dijkstra(Graph const& g, const int source, const int target) {
     cout << endl;
 }
 
-void floyd() {
+// Find minimum weights of all paths between all vertices
+// Can also be used to find transitive closure of a graph
+vector<vector<int>> floyd(Graph const& g) {
+    const int numVerts = g.size();
 
+    vector<vector<int>> pathWeights(numVerts, vector<int>(numVerts, INT_MAX));
+
+    for(int i = 0; i < numVerts; i++) {
+        for(auto p : g[i]) {
+            pathWeights[i][p.first] = p.second;
+        }
+    }
+
+    for(int k = 0; l < numVerts; k++) {
+        for(int i = 0; i < numVerts; i++) {
+            for(int j = 0; j < numVerts; j++) {
+                int intermediate = pathWeights[i][k] + pathWeights[k][j];
+                if(pathWeights[i][j] > intermediate) {
+                    pathWeights[i][j] = intermediate;
+                }
+            }
+        }
+    }
+
+    return pathWeights;
 }
 
 bool edgeExists(const int u, const int v, Graph const& g) {
