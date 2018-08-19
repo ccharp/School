@@ -7,13 +7,14 @@ from flask import Response
 import db
 
 app = Flask(__name__)
+db.init_db()
 
 # If this were an actual project, I not implement any business logic here as I do now
 
 # We use user_name as key to the current game session if it exists
 # Only one game can exist at a time
 @app.route('/target/<user_name>', methods = ['GET'])
-def target():
+def target(user_name):
     target = db.get_game(user_name)
     if(target is None):
         target = random.randint(1, 101)
@@ -63,7 +64,7 @@ Expected input:
     operand: int (optional)
 }
 """
-@app.route('question/<user_name>')
+@app.route('/question/<user_name>')
 def question(name):
     target = db.get_game(user_name)
     if(target is None):
