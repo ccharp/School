@@ -10,15 +10,19 @@ using namespace std;
 
 class Runnable {
 public:
-    virtual void execute() = 0;
+    Runnable() {}
+    virtual void execute() {}
     // TODO: delete constructurs
 };
 
-class TestClass : Runnable {
+class TestRunnable : public Runnable {
+private:
+    int id;
 public:
-    static int id = 0;
+    TestRunnable(int i) : id(i){}
+
     void execute() {
-        cout << "Hello from runnable: " << id++ << endl;
+        cout << "Hello from runnable: " << id << endl;
     }
 };
 
@@ -31,13 +35,11 @@ public:
 
     ThreadPool(const int n) 
     : numThreads(n) 
-    , workerMutexes(vector<mutex>(n)) 
-    , workerCvs(vector<condition_variable>(n)) 
     {
-        this->coordinator = thread(this->coordinate);
+        coordinator = thread([this]{ this->coordinate(); });
 
         for(int i = 0; i < numThreads; i++) {
-            workers.push_back(thread(this->work, this, i));
+            workers.push_back(thread([this, i]{ this->work(i); }));
         }
     }
 
@@ -46,40 +48,43 @@ public:
         coordCv.notify_all();
     }
 
-private:
-    void coordinate() {
-        while(1) {
-            std::unique_lock<std::mutex> lck(queueMutex);
-            coordCv.wait(lck);
-
-            int threadId;
-            shared_ptr<Runnable> runnable;
-
-            runnable = runnableQueue.front();
-            runnableQueue.pop();
-
-            workerCvs[threadId].notify_all();
-        }
-    }
-
-    void work(const int id) {
-        while(1) {
-            std::unique_lock<std::mutex> lck(workerMutexes[id]);
-            workerCvs[id].wait(lck);
-
-            auto runnable = queuePop();
-            runnable->execute();
-        }
-    }
-
     ~ThreadPool() {
         for(int i = 0; i < workers.size(); i++) {
             workers[i].join();
         }
     }
 private:
+    void coordinate() {
+        mutex coordMutex;
+        while(1) {
+            std::unique_lock<std::mutex> lck(coordMutex);
+            coordCv.wait(lck);
+
+            shared_ptr<Runnable> runnable;
+            runnable = runnableQueue.front();
+            runnableQueue.pop();
+
+            workerCv.notify_all();
+        }
+    }
+
+    void work(const int id) {
+        while(1) {
+            std::unique_lock<std::mutex> lck(workerMutex);
+            workerCv.wait(lck);
+
+            auto runnable = queuePop();
+            if(runnable)
+                runnable->execute();
+        }
+    }
+
+private:
     shared_ptr<Runnable> queuePop() {
         lock_guard guard(queueMutex);
+        if(runnableQueue.empty()) 
+            return nullptr;
+
         auto runnable = runnableQueue.front();
         runnableQueue.pop();
         return runnable;
@@ -89,22 +94,27 @@ private:
         runnableQueue.push(runnable);
     }  
 private:
+    int numThreads;
 
     condition_variable coordCv;
     mutex queueMutex;
 
     queue<shared_ptr<Runnable>> runnableQueue;
 
-    int numThreads;
     thread coordinator;
     vector<thread> workers;
-    vector<condition_variable> workerCvs;
-    vector<mutex> workerMutexes;
+    condition_variable workerCv;
+    mutex workerMutex;
 };
 
 int main() {
-    ThreadPool tp(5);
+    int numThreads = 5;
+    ThreadPool tp(numThreads);
 
+    while(numThreads-- > 0) {
+        shared_ptr<TestRunnable> testRunnable = make_shared<TestRunnable>(new TestRunnable(numThreads));
+        tp.queueWork(static_pointer_cast<Runnable>(testRunnable));
+    }
     // wait for a few seconds
     
     return 0;
