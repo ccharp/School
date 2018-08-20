@@ -13,15 +13,16 @@ db.init_db()
 
 # We use user_name as key to the current game session if it exists
 # Only one game can exist at a time
-@app.route('/target/<user_name>', methods = ['GET'])
-def target(user_name):
-    target = db.get_game(user_name)
-    if(target is None):
+@app.route('/game/<user_name>', methods = ['GET'])
+def game(user_name):
+    new_game = False
+    if(db.get_game(user_name)):
         target = random.randint(1, 101)
         db.create_game(user_name, target)
+        new_game = True
 
     data = {
-        'target': target
+        'new_game': new_game 
     }
 
     js = json.dumps(data)
@@ -30,71 +31,56 @@ def target(user_name):
 """
 Expected input:
 {
-    guess_value : int 
-}
-"""
-@app.route('/guess/<user_name>')
-def guess(): 
-    target = db.get_game(user_name)
-    if(target is None): 
-        return abort(400) # no active game
-
-    answer = False
-    try:
-        answer = exec_question(target, json.dumps(request.json))
-    except Exception as e:
-        print(e)
-        return abort(400) # bad input
-
-    # Update DB
-    db.increment_guess(user_name)
-    if answer == True:
-        db.complete_game(user_name)
-
-    js = json.dumps({'result': answer})
-    return Response(js, status=200, mimetype='application/json')
-
-def exec_guess(target, guess_dict):
-    return target == guess_dict['guess_value']
-
-"""
-Expected input:
-{
-    operation: [even|odd|gt|lt],
+    operation: [guess|even|odd|gt|lt],
     operand: int (optional)
 }
 """
-@app.route('/question/<user_name>')
-def question(name):
+@app.route('/operation/<user_name>')
+def operation(name):
     target = db.get_game(user_name)
     if(target is None):
         return abort(400) 
 
     answer = False
     try:
-        answer = exec_question(target, json.dumps(request.json))
+        answer = exec_operation(target, json.dumps(request.json))
     except Exception as e:
-        print(e)
+        print(e) 
+        # Should eventually provide client with some context since exception was probably their fault
         return abort(400)
-
-    # Update DB
-    db.increment_question(user_name)
 
     js = json.dumps({'result': answer})
     return Response(js, status=200, mimetype='application/json')
         
-def exec_question(target, question_dict):
-    operation = question_dict[operation]
-    if operation == 'gt':
-        return target > question_dict[operand]
-    elif operation == 'lt':
-        return target < question_dict[operand]
+def exec_operation(target, operation_Dict):
+    operation = operation_dict['operation']
+    output['operation'] = operation
+    if operation is 'guess':
+        output['result'] = exec_guess(target, operation_dict['operand'])
+    else:
+        output['result'] = exec_question(target, operation_dict)
+    return output
+
+def exec_guess(target, value):
+    guess_result = target == value
+    db.increment_guess()
+    return guess_result 
+
+def exec_question(target, operation_dict):
+    operation = operation_dict[operation]
+    op_result = False
+    if operation == '>':
+        op_result = target > operation_dict[operand]
+    elif operation == '<':
+        op_result = target < operation_dict[operand]
     elif operation == 'odd':
-        return target % 2 == 1
+        op_result = target % 2 == 1
     elif operation == 'even':
-        return target % 2 == 0
+        op_result = target % 2 == 0
     else:   
-        raise Exception('Invalid guess operation')
+        raise Exception('Invalid question or operand: {0}'.format(operation))
+    db.increment_question()
+    return op_result
 
 if __name__ == '__main__':
     app.run()
