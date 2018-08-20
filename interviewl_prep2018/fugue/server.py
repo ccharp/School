@@ -11,6 +11,8 @@ import db
 app = Flask(__name__)
 db.init_db()
 
+# TODO authenticate client
+
 # We use user_name as key to the current game session if it exists
 # Only one game can exist at a time
 @app.route('/game/<user_name>', methods = ['GET'])

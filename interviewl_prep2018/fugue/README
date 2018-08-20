@@ -1,0 +1,43 @@
+To run:
+pip3 install -r requirements.txt
+python3 server.py
+python3 client.py
+# follow command prompts
+
+Comments:
+- The instructions mandated that pretty much all business logic reside on the server. This makes the 
+  server needlessly stateful (and therefore overly complex) and increases the server and DB's work
+  load (too many requests). The client only need communicate with the server when starting a game, 
+  finishing a game, or is shutting down.
+- I didn't give a whole lot of thought to error messages. In some situations they're better than others,
+  but this (and logging) would probably be the next thing on my list if preparing this code for review.
+- I'd also pull all business logic out of server.py into an application middle layer between the
+  server.py and db.py. 
+- Client is a bit of a mess of mixed abstractions and can be cleaned. Should also do most of the application
+  work server currently does.
+- I didn't write any tests, but here's genrally what I would do with a couple examples:
+    - client.py, db.py, and server.py should all be unit tested individually, in isolation, starting with db.py
+        - does client generete requests correctly?
+        - how does client behave if server dies in the middle of a game?
+        - does server handle malformed requests?
+    - integration testing, make sure it works end-to-end
+        - are incomplete games properly persisted and restored?
+- There are additionally a couple TODOs in the code that I would complete before asking for a review.
+- Sorry if the code isn't very Pythonic -- I'm trying to become mmore proficient with python, and I've never 
+  used Flask before. 
+
+Some problems with db.py (non-exhaustive):
+- It's very insecure: 
+    - Users are not authenticated. Anyone can pretend to be anyone.
+    - Inputs are not sanitized. SQL injection is a thing.
+- It doesn't scale. Low-hanging fruit: 
+    - SQLite globally locks the entire DB (I think) for every transaction. 
+    - There should be far fewer reads with proper app design. Ideally we'd offload much of the 
+      work server is doing to client and would therefore need less state on the backend.
+    - That said, we could be caching hot data (like target) on the server
+    - Should have index on user_id
+- Race conditions are possible for users logged in from multiple locations.
+Some DB TODOs:
+- We have the data needed for a leaderboard. For example most games solved, lowest avg #of guesses, etc.
+- Fix the aforementioned problems
+- Use sqlalchemy instead of sqlite3 python package so that we can swap SQL backends

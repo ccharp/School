@@ -38,12 +38,15 @@ def parse_question(txt):
     operation = words[0]
     data = {'operation': operation}
     if(operation != 'odd' and operation != 'even'):
-        data['operand'] = int(words[1]) # We should probably also make words is bigger than 1 and that it is a digit
+        data['operand'] = int(words[1]) # We should probably also make sure words is bigger than 1 and that it is a digit
     return data
+
+### BEGIN MAIN ### 
 
 print("Welcome to Number Finder, the game where you try to guess a number between 1 and 100!\n")
 print("Enter your name and we'll either create a new game or recover an unfinished one!")
-print("(But what about a password? Feature. We want to give you the most streamlined user experience possible. 'Passwords' and 'security' are nothing but tacky anachronisms.)\n")
+
+print("(But why not password? Feature. We want to give you the most streamlined user experience possible. 'Passwords' and 'security' are nothing but tacky anachronisms.)\n")
 # ^ In case it's not obvious, I don't actually believe this. This is a toy program.
 
 print_prompt()
@@ -53,7 +56,7 @@ print("Sit tight, game incoming...")
 try:
     result_dict = make_request(["game", user_name])
 except Exception as e:
-    print("Bad news... Something went wrong when while talking to the server: {0}".format(e))
+    print("Bad news... Something went wrong while talking to the server: {}".format(e))
     exit(1)
 
 if(result_dict['new_game'] is True):
@@ -75,4 +78,3 @@ while True:
             exit(0)
     except Exception as e:
         print("OMGGGGGGG. Encountered error: ({}).".format(e))
-        continue
