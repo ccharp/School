@@ -1,3 +1,5 @@
+// THIS PROBABLY DOESN'T COMPILE
+
 #include <iostream>
 #include <vector>
 #include <unordered_map>
@@ -350,12 +352,16 @@ void nomralizePath(string& path) {
 
     for(int readIdx = 0; readIdx < path.size(); readIdx++, writeIDx++) {
         if(path.substr(readIdx, 3) == "../") {
-            writeIdx = reverseFind(path, writeIdx, '/');
+            writeIdx = reverseFind(path, writeIdx, '/') + 1;
             readIdx += 3;
         }
         path[writeIdx] = path[readIdx];
     }
-    
+
+    writeIdx++;
+    for(; writeIdx < path.size(); writeIdx++) {
+        path[writeIdx] = '\0';
+    }
 }
 
 int reverseFind(const string& s, const int startIdx, const char target) {
@@ -366,27 +372,192 @@ int reverseFind(const string& s, const int startIdx, const char target) {
     return targetIdx;
 }
 
+
+// Least common ancestor of two nodes in a binary tree
+TreeNode* leastCommonAncestor(TreeNode* root, TreeNode* dec1, TreeNode* dec2) { 
+    if(!root) {
+        return nullptr;
+    }
+    if(root == dec1 || root == dec2) {
+        return root;
+    }
+
+    TreeNode* foundLeft = leadCommonAncestor(root->left, dec1, dec2);
+    TreeNode* foundRight = leadCommonAncestor(root->right, dec1, dec2);
+
+    if(foundLeft && foundRight) {
+        return root;
+    } else {
+        return foundLeft ? foundLeft : foundRight;
+    }
+}
+
+// Given two sorted arrays (with repetitive elements) find the kth minimum number from both arrays.
+// Assume k > v1.size() + v2.size()
+// Assume repeating numbers don't increment k
+// What if k == 0?
+int kthMin(int k; vector<int>& v1, vector<int>& v2) {
+    sort(v1.begin(), v1.end());
+    sort(v2.begin(), v2.end());
+
+    int kth = 0;
+    vector<int>::iterator it1 = v1.begin();
+    vector<int>::iterator it2 = v2.begin();
+    while(k > 0 && it1 != v1.end() && it2 != v2.end()) {
+        if(*it1 < *it2) {
+            kth = *it1;
+            it1++;
+        } else {
+            kth = *it2;
+            it2++;
+        }
+        k--;
+    }
+
+    // These last two while loops are mutually exclusive
+    while(k > 0 && it1 != v1.end()) {
+        kth = *it1;
+        it1++;
+        k--;
+    }
+    while(k > 0 && it2 != v2.end()) {
+        kth = *it2;
+        it2++;
+        k--;
+    }
+
+    return kth;
+}
+
+// Given the root to a binary tree, a value n and k. Find the sum of nodes at distance k from node with value n
+int sumFromValue(TreeNode* root, int k, int target) {
+    TreeNode* targetTree = find(root, target); 
+    return sumAtDepth(targetTree, k);
+}
+
+TreeNode* find(TreeNode const * const root, const int target) {
+    if(!root) {
+        return nullptr;
+    }
+    if(root->val == target) {
+        return root);
+    }
+
+    TreeNode* foundLeft = find(root->left, target);
+    TreeNode* foundRight = find(root->right, target);
+
+    return foundLeft ? foundLeft : foundRight;
+}
+
+int sumAtDetph(TreeNode* root, int k) {
+    if(!root) {
+        return 0;
+    }
+    if(k == 0) {
+        return root->val;
+    }
+
+    int sumLeft = sumAtDepth(root->left, k - 1); 
+    int sumRight = sumAtDepth(root->right, k - 1); 
+
+    return sumLeft + sumRight;
+}
+
+// Find an element in a rotated array
+// Returns idx of element
+int find(int target, vector<int>& nums) {
+// TODO
+}
+
+// The cost of a stock on each day is given in an array, find the max profit that you can make by buying and selling in those days.
+// For example, if the given array is {100, 180, 260, 310, 40, 535, 695}, 
+// the maximum profit can earned by buying on day 0, selling on day 3.
+// Again buy on day 4 and sell on day 6. 
+// If the given array of prices is sorted in decreasing order, then profit cannot be earned at all.
+int maxProfit(vector<int>& prices) {
+    int minPrice = INT_MAX;
+    int maxProfit = 0;
+    for(int price : prices) {
+        if(price < minPrice) {
+            minPrice = price;
+        } else {
+            maxProfit = max(price - minPrice, maxProfit);
+        }
+    }
+
+    return maxProfit;
+}
+
+// Given two linked lists both represent a number. Create a linked list that contains its sum.
+// TODO, but I've done this one before
+
+// Given a binary search tree , print the path which has the sum equal to k and has minimum hops. 
+// i.e if there are multiple paths with the sum equal to k then print the path with minimum number of nodes.
+// Assume k can be negative
+string minPathSum(TreeNode* root, int k, string path) {
+    if(!root) { 
+        return "";
+    }
+    if(k == 0) {
+        return path;
+    }
+
+    int currVal = root->val;
+    string leftPath = minPathSum(root->left, k - currVal, path + itoa(currVal));
+    string leftRight = minPathSum(root->right, k - currVal, path + itoa(currVal));
+
+    if(!leftPath.empty() && !rightPath.empty()) {
+        return leftPath.Length() < rightParth.length() ? leftPath : rightPath;
+    }
+
+    return !leftPath.empty() ? leftPath : rightPath;
+}
+
+// A MxN matrix containing integers (positive, negative and zero’s). For every position containing 0, mark the corresponding row and column as 0.
+// Rotate MxN matrix by 90 degress.
+// TODO: but this one is a pretty easy don't-repeat-work problem
+
+// Find the nth number that contains the digit k or is divisible by k. (2 <= k <= 9)
+// Solution: check if it contains the digit or is divisible by k
+
+// Write a program to connect next left node in a binary tree. Also first node of each level should be pointing to last node of next level? 
+// (Without using Queue)
+// TODO don't know what this one is asking?
+
+// Convert a binary tree to its sum tree(each node is the sum of its children)
+
+struct Vertex {
+    int val;
+    unordered_set<int> neighbors; // assume unweighted for now
+}
+
+// Given a directed graph. Construct another graph from given graph such that if path exists from vertices A to vertices B and from B to C, 
+// then path from A to C and from C to A also should exists.
+// Wrap this in a a function without the recursive paramters. Expose that, not this.
+unordered_set<int> transitiveClosureXTREME(vector<Vertex> const& inGraph, vector<Vertex>& outGraph, const int currVertex, unordered_set<int>& visited) {
+    unordered_set<int> reachables
+    for(int neighbor : inGraph[currVertex].neighbors) { 
+        if(visted.find(currVertex) != visited.end()) {
+            continue;
+        }
+        visited.insert(neighbor);
+        setUnion(reachables, transitiveClosureXTREME(inGraph, outGraph, neighbor, visited));
+    }
+
+    addEdges(outGraph, reachables, currVertex);
+
+    return reachables;
+}
+
+// Implement hashmap on your own. Write good hashing function for string.
+class HashMap {
+public:
+
+private:
+    size_t hash()
+    vector<int> 41;
+};
+
 /*  
-
-Least common ancestor of two nodes in a binary tree
-Given two sorted arrays (with repetitive elements) find the kth minimum number from both arrays.
-Given the root to a binary tree, a value n and k.Find the sum of nodes at distance k from node with value n
-Find an element in a rotated array
-The cost of a stock on each day is given in an array, find the max profit that you can make by buying and selling in those days.
-
-For example, if the given array is {100, 180, 260, 310, 40, 535, 695}, 
-the maximum profit can earned by buying on day 0, selling on day 3.
-Again buy on day 4 and sell on day 6. 
-If the given array of prices is sorted in decreasing order, then profit cannot be earned at all.
-
-Given two linked lists both represent a number. Create a linked list that contains its sum.
-Given a binary search tree , print the path which has the sum equal to k and has minimum hops. i.e if there are multiple paths with the sum equal to k then print the path with minimum number of nodes.
-A MxN matrix containing integers (positive, negative and zero’s). For every position containing 0, mark the corresponding row and column as 0.
-Rotate MxN matrix by 90 degress.
-Find the nth number that contains the digit k or is divisible by k. (2 <= k <= 9)
-Write a program to connect next left node in a binary tree. Also first node of each level should be pointing to last node of next level? (Without using Queue)
-Convert a binary tree to its sum tree(each node is the sum of its children)
-Given a directed graph. Construct another graph from given graph such that if path exists from vertices A to vertices B and from B to C, then path from A to C and from C to A also should exists.
-Implement hashmap on your own. Write good hashing function for string.
 Given an array, arrange the elements such that the number formed by concatenating the elements is highest.
 */

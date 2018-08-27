@@ -17,12 +17,9 @@ void printVector(vector<int> const& v) {
 
 void quickSort(vector<int>& nums, int low, int high) {
     if(low >= high) {
-        cout << "Ended\n";
         return;
     }
-    cout << low << ", " << high << endl;
     int mid = partition(nums, low, high);
-    printVector(nums);
     quickSort(nums, low, mid - 1);
     quickSort(nums, mid + 1, high);
 }
@@ -30,7 +27,7 @@ void quickSort(vector<int>& nums, int low, int high) {
 int partition(vector<int>& nums, int low, int high) {
     int pivot = nums[high];
 
-    for(int i = low; i < high; i++) {
+    for(int i = low ; i < high; i++) {
         if(nums[i] < pivot) {
             swap(nums[i], nums[low]);
             low++;
