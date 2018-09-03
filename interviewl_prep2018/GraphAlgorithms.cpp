@@ -160,3 +160,5 @@ Graph prim(Graph const& g) {
 
     return mst;
 }
+
+// Logest path of DAG (critical path)
