@@ -79,7 +79,6 @@ private:
         }
     }
 
-private:
     shared_ptr<Runnable> queuePop() {
         lock_guard guard(queueMutex);
         if(runnableQueue.empty()) 
