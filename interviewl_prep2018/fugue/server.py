@@ -61,12 +61,14 @@ def exec_operation_for_user(user_name, target, operation_dict):
                                        #       so it knows which operation corresponds with which result. Remove.
     if operation == 'guess':
         output['result'] = exec_guess(target, operation_dict['operand'])
+        db.increment_guess(user_name)
         if output['result']:
             db.finish_game(user_name)
-        db.increment_guess(user_name)
     else:
         output['result'] = exec_question(target, operation_dict)
         db.increment_question(user_name)
+    print("Target: {}".format(target))
+    db.update_target(user_name, target + random.randint(-1, 1)*5)
     return output
 
 def exec_guess(target, value):

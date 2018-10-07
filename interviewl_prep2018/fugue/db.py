@@ -49,6 +49,12 @@ def create_game(user_id, target):
                  """
     _ = execute_sql_command(sql_insert, (target, user_id))
 
+def update_target(user_id, new_target):
+    sql_insert = """ UPDATE Games SET target=? 
+                     WHERE user_id=?
+                 """
+    _ = execute_sql_command(sql_insert, (new_target, user_id,))
+
 def finish_game(user_id):
     sql_insert = """ UPDATE Games SET end_time = CURRENT_TIMESTAMP
                      WHERE user_id=? AND end_time IS NULL

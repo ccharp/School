@@ -63,6 +63,23 @@ vector<int> genRandoms(int n) {
     }
     return toSort;
 }
+int repeatedStringMatch(string a, string b) {
+        /*int bIdx = (b + b).find(a);
+        if(bIdx == npos) {
+            return -1;
+        }
+        
+        if(bIdx + a.size() > )*/
+        int count = 0;
+        while(a.find(b, 0) == string::npos && (a.size() < b.size()*2)) {
+            cout << a << endl;
+            count++;
+            a += a;
+        }
+        cout << "Found " << b << " at " << (a.find(b, 0)) << endl;
+        cout << (a.size() < b.size()*2) << endl;
+        return count; 
+    }
 
 int main() {
     srand(time(NULL));
@@ -80,7 +97,11 @@ int main() {
     toSort = genRandoms(n);
     printVector(toSort);
     bucketSort(toSort);
-    printVector(toSort);
+    printVector(toSort)
+
+    cout << endl << endl;
+
+    cout << repeatedStringMatch("abc", "cabcabca") << endl;
 
     cout.flush();
     return 0;
