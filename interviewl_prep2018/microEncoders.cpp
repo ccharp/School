@@ -38,8 +38,9 @@ int findNearest(const int target, const vector<int>& nums) {
 }
 
 int main() {
-    cout << "Enter a list of comma separated integers on a single line:\n";
 
+    // TODO: move the 3 logical sections of main into their own functions
+    cout << "Enter a list of comma separated integers on a single line:\n";
     string numsStr;
     vector<int> nums;
     getline(cin, numsStr);
